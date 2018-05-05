@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Crear Usuarios</title>
+    <title>Crear Usuarios</title>
 </head>
 <body>
     <h1><?php echo isset($mensaje) ? $mensaje : ""; ?></h1>
-    <form action="<?php echo Helper::getUrl("usuarios", "crear", array()); ?>" method="post" enctype="multipart/form-data">
+    <form action="<?php echo Helper::getUrl("usuarios", "editar", array("id" => $id)); ?>" method="post" enctype="multipart/form-data">
       Nombre:<br>
       <input type="text" name="nombre" value="<?php echo isset($datos['nombre'])? $datos['nombre'] : ""; ?>">
       <br>
@@ -21,10 +21,10 @@
       <input type="text" name="estado" value="<?php echo isset($datos['estado'])? $datos['estado'] : ""; ?>">
       <br>
       Password:<br>
-      <input type="text" name="password" value="<?php echo isset($datos['password'])? $datos['password'] : ""; ?>">
+      <input type="text" name="password" value="">
       <br>
       Imagen de perfil:<br>
-      <input type="file" name="imagen" value="<?php echo isset($datos['imagen'])? $datos['imagen'] : ""; ?>">
+      <input type="file" name="imagen" value="">
       <br><br>
       <input type="submit" value="Crear">
     </form>

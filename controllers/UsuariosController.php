@@ -22,13 +22,14 @@ class UsuariosController
                 $datos = $this->validarDatos();
                 if ($datos["result"]) {
                     $msmodel = new UsuariosModel();
-                    $msmodel->setNombre($datos["nombre"]); 
+                    $msmodel->setNombre($datos["nombre"]);
                     $msmodel->setEmail($datos["email"]);
-                    $msmodel->setCedula($datos["cedula"]); 
-                    $msmodel->setEstado($datos["estado"]); 
+                    $msmodel->setCedula($datos["cedula"]);
+                    $msmodel->setEstado($datos["estado"]);
                     $msmodel->setPassword($datos["password"]);
                     $msmodel->insert();
                     $mensaje = "Registro creado !.";
+                    $datos = array();
                 }
                 else {
                     $mensaje = isset($datos["mensaje"]) ? $datos["mensaje"] : "";
@@ -46,13 +47,55 @@ class UsuariosController
     public function editar()
     {
         $metodo = $_SERVER['REQUEST_METHOD'];
+        $datos = array();
+        $datos["result"] = true;
+
+        if ( ! isset($_REQUEST["id"]) ) {
+            $datos["result"] = false;
+            $datos["mensaje"] = "No se ha especificado el ID.";
+        }
+
+        $id = $_REQUEST["id"];
+        $msmodel = UsuariosModel::find($id);
+        if (!$msmodel) {
+            $datos["result"] = false;
+            $datos["mensaje"] = "Usuario con ID = ". $id . " no encontrado.";
+        }
 
         switch ($metodo) {
             case 'GET':
-                // Mostrar formulario
+                // Despliega la vista crear usuario
+
+                if ($datos["result"]) {
+                    $datos["nombre"] = $msmodel->getNombre();
+                    $datos["email"] = $msmodel->getEmail();
+                    $datos["cedula"] = $msmodel->getCedula();
+                    $datos["estado"] = $msmodel->getEstado();
+                }
+                else {
+                    $mensaje = isset($datos["mensaje"]) ? $datos["mensaje"] : "";
+                }
+
+                include dirname(__FILE__)."/../views/usuarios/editarView.php";
                 break;
             case 'POST':
                 // Crear usuario
+                $datos = $this->validarDatos();
+                if ($datos["result"]) {
+                    $msmodel->setNombre($datos["nombre"]);
+                    $msmodel->setEmail($datos["email"]);
+                    $msmodel->setCedula($datos["cedula"]);
+                    $msmodel->setEstado($datos["estado"]);
+                    $msmodel->setPassword($datos["password"]);
+                    $msmodel->update();
+                    $mensaje = "Registro actualizado !.";
+                    $datos = array();
+                }
+                else {
+                    $mensaje = isset($datos["mensaje"]) ? $datos["mensaje"] : "";
+                }
+
+                include dirname(__FILE__)."/../views/usuarios/editarView.php";
                 break;
 
             default:
@@ -64,82 +107,140 @@ class UsuariosController
     public function buscar()
     {
         $metodo = $_SERVER['REQUEST_METHOD'];
-        $id = $_GET["id"];
+        $datosAux = array();
+        $datosAux["result"] = true;
+
+        if ( ! isset($_REQUEST["id"]) ) {
+            $datosAux["result"] = false;
+            $datosAux["mensaje"] = "No se ha especificado el ID.";
+        }
+
+        $id = $_REQUEST["id"];
+        $msmodel = UsuariosModel::find($id);
+        if (!$msmodel) {
+            $datosAux["result"] = false;
+            $datosAux["mensaje"] = "Usuario con ID = ". $id . " no encontrado.";
+        }
+
+        if ($datosAux["result"]) {
+            $dato = UsuariosModel::find($id);
+        }
+        else {
+            $mensaje = isset($datosAux["mensaje"]) ? $datosAux["mensaje"] : "";
+        }
+
+        include dirname(__FILE__)."/../views/usuarios/verView.php";
     }
 
     public function eliminar()
     {
         $metodo = $_SERVER['REQUEST_METHOD'];
-        $id = $_GET["id"];
+        $datosAux = array();
+        $datosAux["result"] = true;
+
+        if ( ! isset($_REQUEST["id"]) ) {
+            $datosAux["result"] = false;
+            $datosAux["mensaje"] = "No se ha especificado el ID.";
+        }
+
+        $id = $_REQUEST["id"];
+        $msmodel = UsuariosModel::find($id);
+        if (!$msmodel) {
+            $datosAux["result"] = false;
+            $datosAux["mensaje"] = "Usuario con ID = ". $id . " no encontrado.";
+        }
+
+        if ($datosAux["result"]) {
+            $msmodel->delete();
+        }
+        else {
+            $mensaje = isset($datosAux["mensaje"]) ? $datosAux["mensaje"] : "";
+        }
+
+        $datos = UsuariosModel::findAll();
+        include dirname(__FILE__)."/../views/usuarios/listarView.php";
     }
 
     public function listar()
     {
-        //Mostrar vista con todos los resultados
+        $datos = UsuariosModel::findAll();
+        include dirname(__FILE__)."/../views/usuarios/listarView.php";
     }
 
     public function validarDatos()
     {
         $datos = array();
+        $datos["result"] = true;
 
-        $nombre = $_POST["nombre"]; 
-        $email = $_POST["email"];
-        $cedula = $_POST["cedula"]; 
-        $estado = $_POST["estado"]; 
-        $password = $_POST["password"];
-        $imagen = isset($_POST["file"])? $_POST["file"] : "";
+        $nombre = isset($_POST["nombre"])? trim($_POST["nombre"]) : "";
+        $email = isset($_POST["email"])? trim($_POST["email"]) : "";
+        $cedula = isset($_POST["cedula"])? trim($_POST["cedula"]) : "";
+        $estado = isset($_POST["estado"])? $_POST["estado"] : "";
+        $password = isset($_POST["password"])? trim($_POST["password"]) : "";
+        $imagen = isset($_FILES["imagen"])? $_FILES["imagen"]["tmp_name"] : "";
 
-        if ( !$nombre  || $email || $cedula || $password  || $imagen)
+        if ( !$nombre  || !$email || !$cedula || !$password )
         {
             $datos["result"] = false;
-            $datos["mensaje"] = "Los datos nombre, email, cedula, password, imagen son requeridos.";
-            return $datos;
-        } 
+            $datos["mensaje"] = "Los datos nombre, email, cedula, password son requeridos.";
+        }
 
         if (! preg_match("/^[a-zA-Z]+/", $nombre)) {
             $datos["result"] = false;
             $datos["mensaje"] = "Sólo se permiten letras como nombre de usuario <br>";
-        } 
+        }
 
         if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $datos["result"] = false;
             $datos["mensaje"] = "Direccion de email incorrecta. <br>";
-            return $datos;
         }
 
-        if (! preg_match("/^[1-9]{1}[0-9]{,20}/", $nombre)) {
+        if (! preg_match("/^[1-9]{1}[0-9]{5,20}/", $cedula)) {
             $datos["result"] = false;
             $datos["mensaje"] = "La cedula es de solo numeros. <br>";
-            return $datos;
         }
 
-        $options = array(
-        'options' => array(
-                          'min_range' => 0,
-                          'max_range' => 1,
-                          )
-        );
-        if (filter_var($estado, FILTER_VALIDATE_INT, $options) !== FALSE) {
+        if ( $estado != 0 && $estado != 1) {
             $datos["result"] = false;
             $datos["mensaje"] = "El estado debe ser 0 o 1. <br>";
-            return $datos;
-        }                     
+        }
 
-        $datos["result"] = true; 
-        $datos["nombre"] = $nombre; 
-        $datos["email"] = $email; 
-        $datos["cedula"] = $cedula; 
-        $datos["estado"] = $estado; 
-        $datos["password"] = $password; 
-        $datos["file"] = $imagen;
+        $uppercase = preg_match('@[A-Z]@', $password);
+        $lowercase = preg_match('@[a-z]@', $password);
+        $number    = preg_match('@[0-9]@', $password);
+
+        if(!$uppercase || !$lowercase || !$number || strlen($password) < 8) {
+            $datos["result"] = false;
+            $datos["mensaje"] = "La contraseña debe tener al entre 8 y 16 caracteres, <br>"
+            ."al menos un dígito, al menos una minúscula y al menos una mayúscula. <br>"
+            ." NO puede tener otros símbolos. <br>";
+        }
+
+        $datos["nombre"] = $nombre;
+        $datos["email"] = $email;
+        $datos["cedula"] = $cedula;
+        $datos["estado"] = $estado;
+        $datos["password"] = $password;
+        $datos["imagen"] = $imagen;
+
+        if ( $datos["result"] && $imagen) {
+            $archivador = __DIR__."/../web/upload/".$email.".jpg";
+            if (!move_uploaded_file($imagen, $archivador)) {
+                $datos["result"] = false;
+                $datos["mensaje"] = "Ocurrio un error al subir la imagen. No pudo guardarse.";
+            }
+        }
 
         return $datos;
     }
 
     public function test()
     {
-        $msmodel = UsuariosModel::find(1);
+        /*$msmodel = UsuariosModel::find(1);
         $msmodel->delete();
-        var_dump($msmodel);
+        var_dump($msmodel);*/
+
+        $datos = UsuariosModel::findAll();
+        var_dump($datos);
     }
 }

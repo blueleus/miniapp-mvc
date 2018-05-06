@@ -281,4 +281,33 @@ class UsuariosModel extends PDORepository
 
 		return $result;
 	}
+
+    /**
+     * Buscar un usuario por su email.
+     * @param  [string] $email [email del usuario a consultar]
+     * @return [UsuariosModel]     [usuario encontrado.]
+     */
+    public static function findForEmail($email)
+    {
+        $sql = "SELECT * FROM usuarios WHERE email=:email";
+        $args = array(
+            ":email" => $email
+        );
+        $stmt = parent::executeQuery($sql, $args);
+        $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if ($r && count($r) > 0) {
+            $newObj = new UsuariosModel();
+            $newObj->setId($r[0]["id"]);
+            $newObj->setNombre($r[0]["nombre"]);
+            $newObj->setEmail($r[0]["email"]);
+            $newObj->setCedula($r[0]["cedula"]);
+            $newObj->setEstado($r[0]["estado"]);
+            $newObj->setPassword($r[0]["password"]);
+            $newObj->setFechaCreacion($r[0]["fecha_creacion"]);
+            return $newObj;
+        }
+
+        return null;
+    }
 }

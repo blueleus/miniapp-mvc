@@ -1,8 +1,8 @@
 <?php
 
 
-require_once dirname(__FILE__)."/../models/UsuariosModel.php";
-require_once dirname(__FILE__)."/../models/RolesModel.php";
+require_once dirname(__FILE__)."/../../models/UsuariosModel.php";
+require_once dirname(__FILE__)."/../../models/RolesModel.php";
 
 /**
 * Controlador Usuarios
@@ -282,7 +282,7 @@ class UsuariosController
         $datos["roles"] = $roles;
 
         if ( $datos["result"] && $imagen) {
-            $archivador = __DIR__."/../web/upload/".$email.".jpg";
+            $archivador = Helper::getPathUpload().$email.".jpg";
             if (!move_uploaded_file($imagen, $archivador)) {
                 $datos["result"] = false;
                 $datos["mensaje"] = "Ocurrio un error al subir la imagen. No pudo guardarse.";

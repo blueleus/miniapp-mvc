@@ -23,4 +23,11 @@ class Helper
         //return $_SERVER['DOCUMENT_ROOT']."/nexura/views/".$mod."/".$view.".php";
         return __DIR__."/../../views/".$mod."/".$view.".php";
     }
+
+    public static function getPathUpload()
+    {
+        //return $_SERVER['DOCUMENT_ROOT']."/nexura/web/upload/";
+        return __DIR__."/../../web/upload/";
+    }
+
 }

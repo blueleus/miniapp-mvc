@@ -17,7 +17,7 @@ class Server
         $modulo = $_REQUEST['mod'];
         $accion = $_REQUEST['fun'];
         $nombreClase = ucwords($modulo)."Controller";
-        $pathClase = PATH_CONTROLLERS.$nombreClase.".php";
+        $pathClase = PATH_CONTROLLERS."/".$modulo."/".$nombreClase.".php";
 
         if ( !file_exists($pathClase)) {
             echo "No se puede dar respuesta a la solicitud entrante.";

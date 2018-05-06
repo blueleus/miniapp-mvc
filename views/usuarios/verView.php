@@ -3,7 +3,7 @@
 <div class="container">
     <div class="row">
         <div class="col-12 col-md-12">
-            <h1><?php echo isset($mensaje) ? $mensaje : ""; ?></h1>
+            <h4><?php echo isset($mensaje) ? $mensaje : ""; ?></h4>
             <table>
                 <tr>
                     <th>Nombre</th>

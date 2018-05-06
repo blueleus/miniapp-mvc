@@ -34,17 +34,3 @@
 
 </head>
 <body>
-
-<?php
-
-if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
-    echo "<nav class='navbar navbar-dark bg-primary'>";
-    echo "<a class='navbar-brand my-2 my-lg-0' href='".Helper::getUrl("login", "singout", array())."''>Cerrar sesi&oacute;n</a>";
-    echo "</nav>";
-}
-
-include Helper::getPathView($mod, $view);
-?>
-
-</body>
-</html>

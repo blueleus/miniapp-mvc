@@ -27,7 +27,11 @@ class Server
         require_once($pathClase);
 
         $resource = new $nombreClase();
-        if (method_exists($resource, $accion)) { $resource->$accion(); }
+        if (method_exists($resource, $accion)) {
+            include __DIR__."/views/header.php";
+            $resource->$accion();
+            include __DIR__."/views/footer.php";
+        }
     }
 }
 

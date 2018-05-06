@@ -3,7 +3,7 @@
 <div class="container">
     <div class="row">
         <div class="col-12 col-md-12">
-            <h1><?php echo isset($mensaje) ? $mensaje : ""; ?></h1>
+            <h4><?php echo isset($mensaje) ? $mensaje : ""; ?></h4>
             <div class="container_options">
                 <a class="btn btn-primary" href="<?php echo Helper::getUrl("usuarios", "crear", array()); ?>">Crear usuario.</a>
             </div>

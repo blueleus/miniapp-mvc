@@ -22,8 +22,9 @@ class UsuariosController
             case 'GET':
                 // Despliega la vista crear usuario
                 // include dirname(__FILE__)."/../views/usuarios/crearView.php";
-                Helper::getView("usuarios", "crearView", array("roles" => $roles));
+                include Helper::getPathView("usuarios", "crearView");
                 break;
+
             case 'POST':
                 // Crear usuario
                 $datos = $this->validarDatos();
@@ -44,10 +45,7 @@ class UsuariosController
                 }
 
                 //include dirname(__FILE__)."/../views/usuarios/crearView.php";
-                Helper::getView("usuarios", "crearView", array(
-                    "mensaje" => isset($mensaje)? $mensaje : "",
-                    "datos" => isset($datos)? $datos : array()
-                ));
+                include Helper::getPathView("usuarios", "crearView");
                 break;
 
             default:
@@ -99,13 +97,7 @@ class UsuariosController
                 }
 
                 //include dirname(__FILE__)."/../views/usuarios/editarView.php";
-                Helper::getView("usuarios", "editarView", array(
-                    "id" => $id,
-                    "mensaje" => isset($mensaje)? $mensaje : "",
-                    "datos" => isset($datos)? $datos : array(),
-                    "roles" => isset($roles)? $roles : null,
-                    "idsRolesUsuario" => isset($idsRolesUsuario)? $idsRolesUsuario : array(),
-                ));
+                include Helper::getPathView("usuarios", "editarView");
                 break;
 
             case 'POST':
@@ -120,18 +112,13 @@ class UsuariosController
                     $msmodel->update();
                     $msmodel->setRoles($datos["roles"]);
                     $mensaje = "Registro actualizado !.";
-                    $datos = array();
                 }
                 else {
                     $mensaje = isset($datos["mensaje"]) ? $datos["mensaje"] : "";
                 }
 
                 //include dirname(__FILE__)."/../views/usuarios/editarView.php";
-                Helper::getView("usuarios", "editarView", array(
-                    "id" => $id,
-                    "mensaje" => isset($mensaje)? $mensaje : "",
-                    "datos" => isset($datos)? $datos : null
-                ));
+                include Helper::getPathView("usuarios", "editarView");
                 break;
 
             default:
@@ -170,10 +157,7 @@ class UsuariosController
         }
 
         //include dirname(__FILE__)."/../views/usuarios/verView.php";
-        Helper::getView("usuarios", "verView", array(
-            "mensaje" => isset($mensaje)? $mensaje : "",
-            "dato" => isset($dato)? $dato : null
-        ));
+        include Helper::getPathView("usuarios", "verView");
     }
 
     /**
@@ -217,9 +201,7 @@ class UsuariosController
     {
         $datos = UsuariosModel::findAll();
         //include dirname(__FILE__)."/../views/usuarios/listarView.php";
-        Helper::getView("usuarios", "listarView", array(
-            "datos" => $datos
-        ));
+        include Helper::getPathView("usuarios", "listarView");
     }
 
     /**

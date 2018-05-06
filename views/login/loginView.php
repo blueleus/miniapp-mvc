@@ -4,7 +4,7 @@
             <br>
             <h5>Login de usuarios</h5>
             <hr />
-            <h6><?php echo isset($mensaje) ? $mensaje : ""; ?></h6>
+            <h4><?php echo isset($mensaje) ? $mensaje : ""; ?></h4>
             <form action="<?php echo Helper::getUrl("login", "login", array()); ?>" method="post" >
 
                 <div class="form-group">

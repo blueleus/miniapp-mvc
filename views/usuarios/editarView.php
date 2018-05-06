@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-4 col-md-4">
 
-            <h6><?php echo isset($mensaje) ? $mensaje : ""; ?></h6>
+            <h4><?php echo isset($mensaje) ? $mensaje : ""; ?></h4>
 
             <form action="<?php echo Helper::getUrl("usuarios", "editar", array("id" => $id)); ?>" method="post" enctype="multipart/form-data">
 

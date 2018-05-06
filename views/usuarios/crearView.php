@@ -1,7 +1,9 @@
+<?php session_start(); ?>
+
 <div class="container">
     <div class="row">
         <div class="col-4 col-md-4">
-            <h6><?php echo isset($mensaje) ? $mensaje : ""; ?></h6>
+            <h4><?php echo isset($mensaje) ? $mensaje : ""; ?></h4>
             <form action="<?php echo Helper::getUrl("usuarios", "crear", array()); ?>" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="nombre">Nombre:</label><br>
@@ -41,7 +43,7 @@
 
                 <div class="form-group">
                     <label for="imagen">Imagen de perfil:</label><br>
-                    <input class="form-control" type="file" name="imagen" value="<?php echo isset($datos['imagen'])? $datos['imagen'] : ""; ?>">
+                    <input type="file" name="imagen" value="<?php echo isset($datos['imagen'])? $datos['imagen'] : ""; ?>">
                 </div>
 
 

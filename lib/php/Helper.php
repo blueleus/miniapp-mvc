@@ -30,4 +30,11 @@ class Helper
         return __DIR__."/../../web/upload/";
     }
 
+    public static function getView($mod, $view, $args=array())
+    {
+        foreach ($args as $key => $value) {
+            $$key = $value;
+        }
+        return include __DIR__."/../../views/template.php";
+    }
 }

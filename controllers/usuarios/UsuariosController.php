@@ -22,7 +22,7 @@ class UsuariosController
             case 'GET':
                 // Despliega la vista crear usuario
                 // include dirname(__FILE__)."/../views/usuarios/crearView.php";
-                include Helper::getPathView("usuarios", "crearView");
+                Helper::getView("usuarios", "crearView", array("roles" => $roles));
                 break;
             case 'POST':
                 // Crear usuario
@@ -44,7 +44,10 @@ class UsuariosController
                 }
 
                 //include dirname(__FILE__)."/../views/usuarios/crearView.php";
-                include Helper::getPathView("usuarios", "crearView");
+                Helper::getView("usuarios", "crearView", array(
+                    "mensaje" => isset($mensaje)? $mensaje : "",
+                    "datos" => isset($datos)? $datos : array()
+                ));
                 break;
 
             default:
@@ -96,7 +99,13 @@ class UsuariosController
                 }
 
                 //include dirname(__FILE__)."/../views/usuarios/editarView.php";
-                include Helper::getPathView("usuarios", "editarView");
+                Helper::getView("usuarios", "editarView", array(
+                    "id" => $id,
+                    "mensaje" => isset($mensaje)? $mensaje : "",
+                    "datos" => isset($datos)? $datos : array(),
+                    "roles" => isset($roles)? $roles : null,
+                    "idsRolesUsuario" => isset($idsRolesUsuario)? $idsRolesUsuario : array(),
+                ));
                 break;
 
             case 'POST':
@@ -118,7 +127,11 @@ class UsuariosController
                 }
 
                 //include dirname(__FILE__)."/../views/usuarios/editarView.php";
-                include Helper::getPathView("usuarios", "editarView");
+                Helper::getView("usuarios", "editarView", array(
+                    "id" => $id,
+                    "mensaje" => isset($mensaje)? $mensaje : "",
+                    "datos" => isset($datos)? $datos : null
+                ));
                 break;
 
             default:
@@ -157,7 +170,10 @@ class UsuariosController
         }
 
         //include dirname(__FILE__)."/../views/usuarios/verView.php";
-        include Helper::getPathView("usuarios", "verView");
+        Helper::getView("usuarios", "verView", array(
+            "mensaje" => isset($mensaje)? $mensaje : "",
+            "dato" => isset($dato)? $dato : null
+        ));
     }
 
     /**
@@ -190,9 +206,7 @@ class UsuariosController
             $mensaje = isset($datosAux["mensaje"]) ? $datosAux["mensaje"] : "";
         }
 
-        $datos = UsuariosModel::findAll();
-        //include dirname(__FILE__)."/../views/usuarios/listarView.php";
-        include Helper::getPathView("usuarios", "listarView");
+        header("Location: ".Helper::getUrl("usuarios", "listar", array()));
     }
 
     /**
@@ -203,7 +217,9 @@ class UsuariosController
     {
         $datos = UsuariosModel::findAll();
         //include dirname(__FILE__)."/../views/usuarios/listarView.php";
-        include Helper::getPathView("usuarios", "listarView");
+        Helper::getView("usuarios", "listarView", array(
+            "datos" => $datos
+        ));
     }
 
     /**

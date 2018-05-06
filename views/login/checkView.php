@@ -5,10 +5,6 @@ session_start();
 
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
 
-    echo "<nav class='navbar navbar-dark bg-primary'>";
-    echo "<a class='navbar-brand my-2 my-lg-0' href='".Helper::getUrl("login", "singout", array())."''>Cerrar sesi&oacute;n</a>";
-    echo "</nav>";
-
 } else {
     echo "Esta pagina es solo para usuarios registrados.<br>";
     echo "<br><a href='".Helper::getUrl("login", "login", array())."'>Login</a>";

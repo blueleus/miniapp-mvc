@@ -34,7 +34,7 @@ class LoginController
 
         switch ($metodo) {
             case 'GET':
-                include Helper::getPathView("login", "loginView");
+                Helper::getView("login", "loginView");
                 break;
 
             case 'POST':
@@ -51,7 +51,10 @@ class LoginController
                 }
 
                 $mensaje = isset($datos["mensaje"]) ? $datos["mensaje"] : "";
-                include Helper::getPathView("login", "loginView");
+                Helper::getView("login", "loginView", array(
+                    "datos" => $datos,
+                    "mensaje" => $mensaje
+                ));
 
                 break;
 

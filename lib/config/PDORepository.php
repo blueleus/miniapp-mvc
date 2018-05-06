@@ -2,16 +2,25 @@
 
 require_once dirname(__FILE__)."/Config.php";
 
-abstract class PDORepository 
+abstract class PDORepository
 {
-    protected static function getConnection(){
+    private static $conn;
+
+    private static function connection(){
          $conn = new PDO("mysql:dbname=".Config::getDatabase().";host=".Config::getHost(),
             Config::getUser(), Config::getPassword(),
             array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES  \'UTF8\''));
         if(!$conn){
             throw new Exception('could not connect to database');
         }
-        return $conn;    
+        return $conn;
+    }
+
+    protected static function getConnection() {
+        if ( ! self::$conn) {
+            self::$conn = self::connection();
+        }
+        return self::$conn;
     }
 
     protected static function executeQuery($sql, $args=array()) {

@@ -14,7 +14,7 @@
       Email:<br>
       <input type="text" name="email" value="<?php echo isset($datos['email'])? $datos['email'] : ""; ?>">
       <br>
-      Cedula:<br>
+      C&eacute;dula:<br>
       <input type="text" name="cedula" value="<?php echo isset($datos['cedula'])? $datos['cedula'] : ""; ?>">
       <br>
       Estado:<br>
@@ -22,7 +22,19 @@
       <br>
       Password:<br>
       <input type="text" name="password" value="">
-      <br>
+      <br><br>
+      <?php
+      echo "<select name='roles[]' multiple>";
+      foreach ($roles as $value) {
+        $selected = "";
+        if (in_array($value->getId(), $idsRolesUsuario)) {
+          $selected = "selected";
+        }
+        echo "<option value='".$value->getId()."' ".$selected.">".$value->getNombre()."</option>";
+      }
+      echo "</select>";
+      ?>
+      <br><br>
       Imagen de perfil:<br>
       <input type="file" name="imagen" value="">
       <br><br>

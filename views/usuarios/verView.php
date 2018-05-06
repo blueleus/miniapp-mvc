@@ -24,13 +24,13 @@
     </style>
 </head>
 <body>
+    <h1><?php echo isset($mensaje) ? $mensaje : ""; ?></h1>
     <table>
         <tr>
             <th>Nombre</th>
             <th>Email</th>
-            <th>Cedula</th>
+            <th>C&eacute;dula</th>
             <th>Estado</th>
-            <th>Password</th>
             <th>Fecha de Creacion</th>
             <th>Imagen</th>
         </tr>
@@ -41,9 +41,13 @@
             echo "<td>".$dato->getEmail()."</td>";
             echo "<td>".$dato->getCedula()."</td>";
             echo "<td>".$dato->getEstado()."</td>";
-            echo "<td>".$dato->getPassword()."</td>";
             echo "<td>".$dato->getFechaCreacion()."</td>";
-            echo "<td></td>";
+            if (file_exists(dirname(__FILE__)."/../../web/upload/".$dato->getEmail().".jpg")) {
+                echo "<td><img src='web/upload/".$dato->getEmail().".jpg' border='1' width='100' height='100'></td>";
+            }
+            else {
+                echo "<td></td>";
+            }
             echo "</tr>";
         }
         ?>

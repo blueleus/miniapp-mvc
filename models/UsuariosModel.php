@@ -95,9 +95,68 @@ class UsuariosModel extends PDORepository
         return $this->fechaCreacion;
     }
 
+    /**
+     * Fija los roles para un usuario
+     * @param [array] $idsRoles [IDs roles -> array(id_1, id_2, ...)]
+     */
+    public function setRoles($idsRoles)
+    {
+        if ( !$idsRoles || !is_array($idsRoles) ) { return false; }
+        if ( count($idsRoles) < 1 ) { return false; }
+
+		$oldIdsRoles = array_column ( $this->getRoles(), "id");
+
+        foreach ($idsRoles as $id_rol) {
+            if ( ! in_array($id_rol, $oldIdsRoles)) {
+                $sql = "INSERT INTO roles_usuarios (rol_id, usuario_id)
+                VALUES (:rol_id, :usuario_id)";
+                $args = array(
+                    ":rol_id" => $id_rol,
+                    ":usuario_id" => $this->id
+                );
+                $stmt = $this->executeQuery($sql, $args);
+            }
+        }
+
+        foreach ($oldIdsRoles as $id_rol) {
+            if ( ! in_array($id_rol, $idsRoles)) {
+    			$sql = "DELETE FROM roles_usuarios
+                WHERE rol_id=:rol_id AND usuario_id=:usuario_id";
+    			$args = array(
+    				":rol_id" => $id_rol,
+    				":usuario_id" => $this->id
+    			);
+    			$stmt = $this->executeQuery($sql, $args);
+            }
+    	}
+
+		return true;
+    }
+
+    /**
+     * Retorna todos los roles del usuario.
+     * @return [array] [roles -> array(id => nombre)]
+     */
+    public function getRoles()
+    {
+		$sql = "SELECT r.id as id, r.nombre as nombre FROM roles_usuarios as rs, roles as r
+        WHERE rs.usuario_id=:id AND rs.rol_id = r.id";
+		$args = array(
+			":id" => $this->id
+		);
+		$stmt = parent::executeQuery($sql, $args);
+		$r = $stmt? $stmt->fetchAll(PDO::FETCH_ASSOC) : array();
+		return $r;
+    }
+
+    /**
+     * Insertar una fila con la informacion de un usuario.
+     * @return [boolean] [true o false]
+     */
 	public function insert()
 	{
-		$sql = "INSERT INTO usuarios (nombre, email, cedula, estado, password) VALUES (:nombre, :email, :cedula, :estado, :password)";
+		$sql = "INSERT INTO usuarios (nombre, email, cedula, estado, password)
+        VALUES (:nombre, :email, :cedula, :estado, :password)";
 		$args = array(
 			":nombre" => $this->nombre,
 			":email" => $this->email,
@@ -107,17 +166,32 @@ class UsuariosModel extends PDORepository
 		);
 		$stmt = $this->executeQuery($sql, $args);
 
+		// $sql = "SELECT MAX(id) as id FROM usuarios";
+		// $stmtAux = $this->executeQuery($sql, array());
+		// $r = $stmtAux->fetchAll(PDO::FETCH_ASSOC);
+
+		// if ($stmt){ $this->id = $r[0]["id"]; }
+
+        if ($stmt) {
+            $this->id = $this->getConnection()->lastInsertId();
+        }
+
 		return !$stmt ? false : true;
 	}
 
+    /**
+     * Actualiza los datos de un usuario.
+     * @return [boolean] [true o false]
+     */
 	public function update()
 	{
 		if ( ! $this->id ) {
-			echo "No se tiene referencia del id del objeto a actulizar.";
-			return false;
+			//echo "No se tiene referencia al ID del objeto a actulizar.";
+			throw new Exception("No se tiene referencia al ID del objeto a actulizar.");
 		}
 
-		$sql = "UPDATE usuarios SET nombre=:nombre, email=:email, cedula=:cedula, estado=:estado, password=:password WHERE id=:id";
+		$sql = "UPDATE usuarios SET nombre=:nombre, email=:email, cedula=:cedula,
+        estado=:estado, password=:password WHERE id=:id";
 		$args = array(
 			":id" => $this->id,
 			":nombre" => $this->nombre,
@@ -128,11 +202,21 @@ class UsuariosModel extends PDORepository
 		);
 		$stmt = $this->executeQuery($sql, $args);
 
-		return !$stmt ? false : true;
+        return !$stmt ? false : true;
 	}
 
+    /**
+     * Eliminar un usuario por su ID.
+     * @return [boolean] [true o false]
+     */
 	public function delete()
 	{
+		$sql = "DELETE FROM roles_usuarios WHERE usuario_id=:usuario_id";
+		$args = array(
+			":usuario_id" => $this->id
+		);
+		$stmt = $this->executeQuery($sql, $args);
+
 		$sql = "DELETE FROM usuarios WHERE id=:id";
 		$args = array(
 			":id" => $this->id
@@ -142,6 +226,11 @@ class UsuariosModel extends PDORepository
 		return !$stmt ? false : true;
 	}
 
+    /**
+     * Buscar un usuario por su ID.
+     * @param  [integer] $id [ID del usuario a consultar]
+     * @return [UsuariosModel]     [usuario encontrado.]
+     */
 	public static function find($id)
 	{
 		$sql = "SELECT * FROM usuarios WHERE id=:id";
@@ -151,7 +240,7 @@ class UsuariosModel extends PDORepository
 		$stmt = parent::executeQuery($sql, $args);
 		$r = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if ($r) {
+        if ($r && count($r) > 0) {
     		$newObj = new UsuariosModel();
     		$newObj->setId($r[0]["id"]);
     		$newObj->setNombre($r[0]["nombre"]);
@@ -166,6 +255,10 @@ class UsuariosModel extends PDORepository
 		return null;
 	}
 
+    /**
+     * Consulta todos los usuarios creados en el sistema.
+     * @return [array] [array de objetos UsuariosModel.]
+     */
 	public static function findAll()
 	{
 		$sql = "SELECT * FROM usuarios";

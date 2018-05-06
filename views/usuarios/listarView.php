@@ -39,6 +39,7 @@
     </style>
 </head>
 <body>
+    <h1><?php echo isset($mensaje) ? $mensaje : ""; ?></h1>
     <div class="container_options">
         <a href="<?php echo Helper::getUrl("usuarios", "crear", array()); ?>">Crear usuario.</a>
     </div>
@@ -48,10 +49,12 @@
             <tr>
                 <th>Nombre</th>
                 <th>Email</th>
-                <th>Cedula</th>
+                <th>C&eacute;dula</th>
                 <th>Estado</th>
                 <th>Imagen</th>
-                <th>Opciones</th>
+                <th></th>
+                <th></th>
+                <th></th>
             </tr>
             <?php
             if (isset($datos)) {
@@ -61,10 +64,19 @@
                     echo "<td>".$value->getEmail()."</td>";
                     echo "<td>".$value->getCedula()."</td>";
                     echo "<td>".$value->getEstado()."</td>";
-                    echo "<td></td>";
+                    if (file_exists(dirname(__FILE__)."/../../web/upload/".$value->getEmail().".jpg")) {
+                        echo "<td><img src='web/upload/".$value->getEmail().".jpg' border='1' width='100' height='100'></td>";
+                    }
+                    else {
+                        echo "<td></td>";
+                    }
                     echo "<td>";
                     echo "<a href='".Helper::getUrl("usuarios", "editar", array("id" => $value->getId()))."'>Editar.</a><br>";
+                    echo "</td>";
+                    echo "<td>";
                     echo "<a href='".Helper::getUrl("usuarios", "eliminar", array("id" => $value->getId()))."'>Eliminar.</a><br>";
+                    echo "</td>";
+                    echo "<td>";
                     echo "<a href='".Helper::getUrl("usuarios", "buscar", array("id" => $value->getId()))."'>Ver.</a><br>";
                     echo "</td>";
                     echo "</tr>";

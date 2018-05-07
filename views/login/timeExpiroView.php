@@ -5,4 +5,9 @@
 			<a class="btn btn-primary" href="<?php echo Helper::getUrl("login", "login", array()) ?>">Necesita Hacer Login</a>
 		</div>
 	</div>
+</div><div class="container-fluid">
+
+    Su sesion a terminado,
+    <a href="<?php echo Helper::getUrl("login", "login", array()) ?>">Necesita Hacer Login</a>
+
 </div>

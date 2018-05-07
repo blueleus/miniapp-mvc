@@ -38,7 +38,7 @@ class Session
         $_SESSION['loggedin'] = true;
         $_SESSION['username'] = $usuario->getEmail();
         $_SESSION['start'] = time();
-        $_SESSION['expire'] = $_SESSION['start'] + (5 * 60);
+        $_SESSION['expire'] = $_SESSION['start'] + (20 * 60);
         return;
     }
 

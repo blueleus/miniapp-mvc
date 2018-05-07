@@ -1,27 +1,2 @@
 Solsolecito123
 
-2018-05-07T05:58:07+02:00 --> Array
-(
-    [result] => 1
-    [mensaje] => 
-    [email] => example1@example.com
-    [password] => Solsolecito123
-)
-
-2018-05-07T06:00:06+02:00 --> Array
-(
-    [result] => 1
-    [mensaje] => 
-    [nombre] => Andres Felipe
-    [email] => example1@example.com
-    [cedula] => 123456789
-    [estado] => 1
-    [password] => Solsolecito123
-    [imagen] => C:\xampp\tmp\phpD5EB.tmp
-    [roles] => Array
-        (
-            [0] => 1
-        )
-
-)
-

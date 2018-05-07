@@ -310,4 +310,45 @@ class UsuariosModel extends PDORepository
 
         return null;
     }
+
+    /**
+     * Retorna paginados todos los usurios creados en el sistema.
+     * @param  [int] $pagina [numero de pagina]
+     * @return [array]       [array de objetos]
+     */
+    public static function findAllPaginated($pagina)
+    {
+        $sql = "SELECT COUNT(*) as total_registros FROM usuarios";
+        $stmt = parent::executeQuery($sql, array());
+        $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $num_total_registros = $r[0]["total_registros"];
+
+        //Limito la busqueda
+        $TAMANO_PAGINA = 10;
+
+        //examino la página a mostrar y el inicio del registro a mostrar
+        if (!$pagina) {
+           $inicio = 0;
+           $pagina = 1;
+        }
+        else {
+           $inicio = ($pagina - 1) * $TAMANO_PAGINA;
+        }
+        //calculo el total de páginas
+        $total_paginas = ceil($num_total_registros / $TAMANO_PAGINA);
+
+        $sql = "SELECT id, nombre, email, cedula, estado, fecha_creacion FROM usuarios LIMIT ".$inicio."," . $TAMANO_PAGINA;
+        $stmt = parent::executeQuery($sql, array());
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $result = array(
+            "pagina" => $pagina,
+            "total_paginas" => $total_paginas,
+            "num_total_registros" => $num_total_registros,
+            "data" => $rs
+        );
+
+        return $result;
+    }
 }

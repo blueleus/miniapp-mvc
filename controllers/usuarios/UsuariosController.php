@@ -133,7 +133,6 @@ class UsuariosController
      */
     public function buscar()
     {
-        $metodo = $_SERVER['REQUEST_METHOD'];
         $datosAux = array();
         $datosAux["result"] = true;
 
@@ -166,7 +165,6 @@ class UsuariosController
      */
     public function eliminar()
     {
-        $metodo = $_SERVER['REQUEST_METHOD'];
         $datosAux = array();
         $datosAux["result"] = true;
         $datosAux["mensaje"] = "";
@@ -202,6 +200,15 @@ class UsuariosController
         $datos = UsuariosModel::findAll();
         //include dirname(__FILE__)."/../views/usuarios/listarView.php";
         include Helper::getPathView("usuarios", "listarView");
+    }
+
+    public function listar_paginado()
+    {
+        $pagina = isset($_REQUEST["pagina"])? $_REQUEST["pagina"] : 1;
+        $datos = UsuariosModel::findAllPaginated($pagina);
+
+        header('Content-type: application/json; charset=utf-8');
+        return json_encode($data);
     }
 
     /**

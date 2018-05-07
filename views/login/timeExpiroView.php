@@ -1,4 +1,4 @@
-<div>
+<div class="container-fluid">
 
     Su sesion a terminado,
     <a href="<?php echo Helper::getUrl("login", "login", array()) ?>">Necesita Hacer Login</a>

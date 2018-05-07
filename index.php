@@ -1,6 +1,8 @@
 <?php
 
 define("PATH_CONTROLLERS", dirname(__FILE__)."/controllers/");
+require_once dirname(__FILE__)."/lib/php/Helper.php";
+require_once dirname(__FILE__)."/lib/php/Session.php";
 
 /**
 * Controlador Frontal
@@ -16,6 +18,31 @@ class Server
 
         $modulo = $_REQUEST['mod'];
         $accion = $_REQUEST['fun'];
+
+        $this->access($modulo, $accion);
+    }
+
+    public function access($modulo, $accion)
+    {
+        Session::startSession();
+
+        if (Helper::isRestringida($modulo, $accion, "login")) {
+
+            if (! $this->isLogueado()) {
+                include __DIR__."/views/header.php";
+                include __DIR__."/views/login/accessView.php";
+                include __DIR__."/views/footer.php";
+                return;
+            }
+
+            if ($this->timeExpiro()) {
+                include __DIR__."/views/header.php";
+                include __DIR__."/views/login/timeExpiroView.php";
+                include __DIR__."/views/footer.php";
+                return;
+            }
+        }
+
         $nombreClase = ucwords($modulo)."Controller";
         $pathClase = PATH_CONTROLLERS."/".$modulo."/".$nombreClase.".php";
 
@@ -32,6 +59,18 @@ class Server
             $resource->$accion();
             include __DIR__."/views/footer.php";
         }
+
+    }
+
+    private function isLogueado()
+    {
+        return isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true;
+    }
+
+    public function timeExpiro()
+    {
+        $now = time();
+        return isset($_SESSION['expire']) && $now > $_SESSION['expire'];
     }
 }
 

@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__)."/../config/Config.php";
+
 /**
 *   Helper para la conexion a la base de datos.
 */
@@ -36,5 +38,13 @@ class Helper
             $$key = $value;
         }
         return include __DIR__."/../../views/template.php";
+    }
+
+    public static function isRestringida($modulo, $accion, $restriccion)
+    {
+        $restricciones = Config::getPermission();
+
+        return isset($restricciones[$restriccion][$modulo]) &&
+                    in_array($accion, $restricciones[$restriccion][$modulo]);
     }
 }

@@ -1,5 +1,3 @@
-<?php include_once Helper::getPathView("login", "checkView"); ?>
-
 <div class="container">
     <div class="row">
         <div class="col-12 col-md-12">

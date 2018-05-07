@@ -1,33 +1,13 @@
 <?php
 
 require_once dirname(__FILE__)."/../../models/UsuariosModel.php";
+require_once dirname(__FILE__)."/../../lib/php/Session.php";
 
 /**
 * LoginController
 */
 class LoginController
 {
-    private function verificarPassword($usuario, $password)
-    {
-        return md5($password) == $usuario->getPassword();
-    }
-
-    private function checkLogin($email, $password)
-    {
-        $usuario = UsuariosModel::findForEmail($email);
-
-        if ( !$usuario ) { return false; }
-        if ( !$this->verificarPassword($usuario, $password) ) { return false; }
-
-        session_start();
-        $_SESSION['loggedin'] = true;
-        $_SESSION['username'] = $usuario->getEmail();
-        $_SESSION['start'] = time();
-        $_SESSION['expire'] = $_SESSION['start'] + (5 * 60);
-
-        return true;
-    }
-
     public function login()
     {
         $metodo = $_SERVER['REQUEST_METHOD'];
@@ -63,14 +43,26 @@ class LoginController
 
     public function singout()
     {
-        session_start();
-        unset ($_SESSION['loggedin']);
-        unset ($_SESSION['username']);
-        unset ($_SESSION['start']);
-        unset ($_SESSION['expire']);
-        session_destroy();
+        Session::destroy();
 
         header("Location: ".Helper::getUrl("login", "login", array()));
+    }
+
+    private function checkLogin($email, $password)
+    {
+        $usuario = UsuariosModel::findForEmail($email);
+
+        if ( !$usuario ) { return false; }
+        if ( !$this->verificarPassword($usuario, $password) ) { return false; }
+
+        Session::initializeSession($usuario);
+
+        return true;
+    }
+
+    private function verificarPassword($usuario, $password)
+    {
+        return md5($password) == $usuario->getPassword();
     }
 
     private function validarDatos()

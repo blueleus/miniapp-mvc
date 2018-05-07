@@ -16,6 +16,8 @@ class UsuariosModel extends PDORepository
     private $password;
 	private $fechaCreacion;
 
+    const TAMANO_PAGINA = 10;
+
 	/*public function test()
 	{
         $stmt = $this->executeQuery("SELECT * FROM roles");
@@ -324,21 +326,18 @@ class UsuariosModel extends PDORepository
 
         $num_total_registros = $r[0]["total_registros"];
 
-        //Limito la busqueda
-        $TAMANO_PAGINA = 10;
-
         //examino la página a mostrar y el inicio del registro a mostrar
         if (!$pagina) {
            $inicio = 0;
            $pagina = 1;
         }
         else {
-           $inicio = ($pagina - 1) * $TAMANO_PAGINA;
+           $inicio = ($pagina - 1) * self::TAMANO_PAGINA;
         }
         //calculo el total de páginas
-        $total_paginas = ceil($num_total_registros / $TAMANO_PAGINA);
+        $total_paginas = ceil($num_total_registros / self::TAMANO_PAGINA);
 
-        $sql = "SELECT id, nombre, email, cedula, estado, fecha_creacion FROM usuarios LIMIT ".$inicio."," . $TAMANO_PAGINA;
+        $sql = "SELECT id, nombre, email, cedula, estado, fecha_creacion FROM usuarios LIMIT ".$inicio."," . self::TAMANO_PAGINA;
         $stmt = parent::executeQuery($sql, array());
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -349,6 +348,33 @@ class UsuariosModel extends PDORepository
             "data" => $rs
         );
 
+        return $result;
+    }
+
+    public static function getInformacionPaginado()
+    {
+        $sql = "SELECT COUNT(*) as total_registros FROM usuarios";
+        $stmt = parent::executeQuery($sql, array());
+        $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $num_total_registros = $r[0]["total_registros"];
+
+        //calculo el total de páginas
+        $total_paginas = ceil($num_total_registros / self::TAMANO_PAGINA);
+
+        $result = array(
+            "total_paginas" => $total_paginas,
+            "num_total_registros" => $num_total_registros
+        );
+
+        return $result;        
+    }
+
+    public static function countActAndInact()
+    {
+        $sql = "SELECT estado, COUNT(*) as total FROM usuarios GROUP BY estado";
+        $stmt = parent::executeQuery($sql, array());
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
 }

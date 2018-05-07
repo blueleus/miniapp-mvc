@@ -36,6 +36,7 @@ class Server
             }
 
             if ($this->timeExpiro()) {
+                Session::destroy();
                 include __DIR__."/views/header.php";
                 include __DIR__."/views/login/timeExpiroView.php";
                 include __DIR__."/views/footer.php";

@@ -230,10 +230,34 @@ class UsuariosController
         ));
     }
 
+    public function reportes()
+    {
+        //include dirname(__FILE__)."/../views/usuarios/listarView.php";
+        return Helper::getView("usuarios", "reportesView", array());
+    }
+
     public function listar_paginado()
     {
         $pagina = isset($_REQUEST["pagina"])? $_REQUEST["pagina"] : 1;
         $datos = UsuariosModel::findAllPaginated($pagina);
+
+        header('Content-type: application/json; charset=utf-8');
+        echo json_encode($datos);
+        exit();
+    }
+
+    public function conteo_activo_inactivos()
+    {
+        $datos = UsuariosModel::countActAndInact();
+
+        header('Content-type: application/json; charset=utf-8');
+        echo json_encode($datos);
+        exit();
+    }
+
+    public function informacion_paginado()
+    {
+        $datos = UsuariosModel::getInformacionPaginado();
 
         header('Content-type: application/json; charset=utf-8');
         echo json_encode($datos);
@@ -347,5 +371,6 @@ class UsuariosController
         var_dump($u);*/
 
         //echo Helper::getPathView("usuarios", "verView");
+        //var_dump(UsuariosModel::countActAndInact());
     }
 }

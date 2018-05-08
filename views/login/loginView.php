@@ -1,6 +1,6 @@
 <div class="container">
     <div class="row">
-        <div class="col-4 col-md-4">
+        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
             <br>
             <h5>Login de usuarios</h5>
             <hr />

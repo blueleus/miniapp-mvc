@@ -51,3 +51,25 @@ CREATE TABLE `nexura`.`roles_usuarios` (
     FOREIGN KEY (rol_id) REFERENCES roles(id),
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 ) ENGINE = InnoDB;
+
+
+# SELECT * FROM usuarios LEFT JOIN roles_usuarios ON usuarios.id = roles_usuarios.usuario_id LEFT JOIN roles ON roles_usuarios.rol_id = roles.id;
+
+# SELECT * FROM roles LEFT JOIN roles_usuarios ON roles.id = roles_usuarios.id LEFT JOIN usuarios ON usuarios.id = roles_usuarios.usuario_id;
+
+# SELECT * FROM usuarios WHERE id NOT IN (SELECT usuario_id FROM roles_usuarios);
+
+# SELECT * FROM roles WHERE id NOT IN (SELECT rol_id FROM roles_usuarios);
+
+# FULL OUTER JOIN
+# SELECT id, nombre FROM usuarios WHERE id NOT IN (SELECT usuario_id FROM roles_usuarios)
+# UNION ALL
+# SELECT id, nombre FROM roles WHERE id NOT IN (SELECT rol_id FROM roles_usuarios)
+
+# SELECT * FROM usuarios LEFT JOIN roles_usuarios ON usuarios.id = roles_usuarios.usuario_id LEFT JOIN roles ON roles_usuarios.rol_id = roles.id WHERE roles.id IS NULL
+
+# SELECT * FROM roles LEFT JOIN roles_usuarios ON roles.id = roles_usuarios.id LEFT JOIN usuarios ON usuarios.id = roles_usuarios.usuario_id WHERE usuarios.id IS NULL
+
+# Crear back de una tabla (Copia todos los datos de una tablas a otra con la misma estructura.)
+# INSERT INTO usuarios_backup (id, nombre, email, cedula, estado, password, fecha_creacion) SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.cedula, usuarios.estado, usuarios.password, usuarios.fecha_creacion FROM usuarios
+# INSERT INTO usuarios_backup (id, nombre, email, cedula, estado, password, fecha_creacion) SELECT * FROM usuarios

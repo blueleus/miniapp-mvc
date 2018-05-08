@@ -1,2 +1,19 @@
 Solsolecito123
 
+
+2018-05-09T00:36:43+02:00 --> Array
+(
+    [result] => 1
+    [mensaje] => 
+    [email] => example@example.com
+    [password] => Solsolecito123
+)
+
+2018-05-09T00:57:29+02:00 --> Array
+(
+    [result] => 1
+    [mensaje] => 
+    [email] => example@example.com
+    [password] => Solsolecito123
+)
+

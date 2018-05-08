@@ -2,15 +2,21 @@
     <div class="row">
         <div class="col-12 col-md-12">
             <h4><?php echo isset($mensaje) ? $mensaje : ""; ?></h4>
-            <div class="container_options">
-                <a class="btn btn-primary" href="<?php echo Helper::getUrl("usuarios", "crear", array()); ?>">Crear usuario.</a>
-                <a class="btn btn-secondary" href="<?php echo Helper::getUrl("usuarios", "reportes", array()); ?>">Reportes</a>
+            <div class="container_options row">
+                <div class="col-md-4">
+                    <a class="btn btn-primary btn-lg btn-block" href="<?php echo Helper::getUrl("usuarios", "crear", array()); ?>"><span class="glyphicon glyphicon-plus"></span>Crear usuario.</a>
+                </div>
+
+                <div class="col-md-4">
+                    <a class="btn btn-secondary btn-lg btn-block" href="<?php echo Helper::getUrl("usuarios", "reportes", array()); ?>"><span class="glyphicon glyphicon-picture"></span>Reportes</a>
+                </div>
             </div>
             <br>
-            <div class="container_table">
-                <table id="users_table">
-                    <thead>
+            <div class="container_table table-responsive-lg">
+                <table id="users_table" class="table table-hover">
+                    <thead class="thead-dark">
                         <tr>
+                            <th></th>
                             <th>Nombre</th>
                             <th>Email</th>
                             <th>C&eacute;dula</th>
@@ -121,7 +127,11 @@
 
                 var tablebody = ""; 
                 $.each(data, function(index, val) {
+
+                    var idx = (index  + 1) + (pagina_actual-1)*10;
+
                     tablebody += "<tr>";
+                    tablebody += "<td>" + idx + "</td>";
                     tablebody += "<td>" + val.nombre + "</td>";
                     tablebody += "<td>" + val.email + "</td>";
                     tablebody += "<td>" + val.cedula + "</td>";

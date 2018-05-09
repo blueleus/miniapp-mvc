@@ -12,6 +12,8 @@
                 </div>
             </div>
             <br>
+            <div class="loader"></div>
+            <br>
             <div class="container_table table-responsive-lg">
                 <table id="users_table" class="table table-bordered table-hover">
                     <thead class="thead-dark">
@@ -52,48 +54,60 @@
     $( document ).ready(function() {
 
         cargarUsuarios(1);
-        inicializarListeners();
+        //inicializarListeners();
 
-    });
+        var info = getInfoPaginado();
+        var num_total_registros = parseInt(info.num_total_registros);
+        var total_paginas = parseInt(info.total_paginas);
+        var pagina_actual = 1;
 
-    function inicializarListeners() {
-        $.ajax({
-            url:   'http://localhost/nexura/index.php?mod=usuarios&fun=informacion_paginado',
-            type:  'GET',
-            dataType: 'json',
-            beforeSend: function () {
-                console.log("Procesando, espere por favor...");
-            },
-            success:  function (response) {
-                console.log(response);
-                //var num_total_registros = response.num_total_registros;
-                var num_total_registros = parseInt(response.num_total_registros);
-                var total_paginas = parseInt(response.total_paginas);
-                var pagina_actual = 1;
-
-                $("#bt-next").on( "click", function() {
-                    if (pagina_actual + 1 <= total_paginas ) {
-                        pagina_actual += 1;
-                        console.log(pagina_actual);
-                        cargarUsuarios(pagina_actual);
-                    } else {
-                        alert("No hay más paginas.");
-                        console.log("No hay más paginas.");
-                    }
-                });
-
-                $("#bt-previoues").on( "click", function() {
-                    if (pagina_actual - 1 > 0 ) {
-                        pagina_actual -= 1;
-                        console.log(pagina_actual);
-                        cargarUsuarios(pagina_actual);
-                    } else {
-                        alert("No hay menos paginas.");
-                        console.log("No hay menos paginas.");
-                    }
-                });
+        $("#bt-next").on( "click", function() {
+            if (pagina_actual + 1 <= total_paginas ) {
+                pagina_actual += 1;
+                console.log(pagina_actual);
+                cargarUsuarios(pagina_actual);
+            } else {
+                alert("No hay más paginas.");
+                console.log("No hay más paginas.");
             }
         });
+
+        $("#bt-previoues").on( "click", function() {
+            if (pagina_actual - 1 > 0 ) {
+                pagina_actual -= 1;
+                console.log(pagina_actual);
+                cargarUsuarios(pagina_actual);
+            } else {
+                alert("No hay menos paginas.");
+                console.log("No hay menos paginas.");
+            }
+        });
+    });
+
+    function getInfoPaginado() {
+
+        var dataResult;
+
+        try {
+            $.ajax({
+                url:   'http://localhost/nexura/index.php?mod=usuarios&fun=informacion_paginado',
+                type:  'GET',
+                dataType: 'json',
+                async: false,
+                beforeSend: function () {
+                    console.log("Procesando, espere por favor...");
+                },
+                success:  function (response) {
+                    console.log(response);
+                    dataResult = response;
+                }
+            });
+
+            return dataResult;
+        }
+        catch(ex) {
+            alert("ERROR: Ocurrio un error " + ex);
+        }
     }
 
     /*
@@ -107,6 +121,8 @@
     }
 
     function cargarUsuarios(pagina) {
+        var loader = $('.loader');
+
         $.ajax({
             data:  {"pagina" : pagina},
             url:   'http://localhost/nexura/index.php?mod=usuarios&fun=listar_paginado',
@@ -114,6 +130,7 @@
             dataType: 'json',
             beforeSend: function () {
                 console.log("Procesando, espere por favor...");
+                loader.show();
             },
             success:  function (response) {
                 console.log(response);
@@ -153,6 +170,11 @@
                 });
 
                 $("#users_table tbody").html(tablebody);
+                loader.hide();
+            },
+            fail: function (err) {
+                loader.hide();
+                alert(err);
             }
         });
     }

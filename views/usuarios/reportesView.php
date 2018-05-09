@@ -8,7 +8,7 @@
 	<div class="row">
 		<div class="col-8 col-md-8" id="grafico2">
 
-		</div>		
+		</div>
 	</div>
 
 	<div class="row">
@@ -32,6 +32,8 @@
 			},
 			success:  function (response) {
 				console.log(response);
+                var activos = (typeof(response[0]) != "undefined" && response[0] != null)? response[0].total : 0;
+                var inactivos = (typeof(response[1]) != "undefined" && response[1] != null)? response[1].total : 0;
 
 				Highcharts.chart('grafico1', {
 				    chart: {
@@ -56,11 +58,11 @@
 				            "data": [
 				                {
 				                    "name": "Inactivos",
-				                    "y": parseInt(response[0].total)
+				                    "y": parseInt(inactivos)
 				                },
 				                {
 				                    "name": "Activos",
-				                    "y": parseInt(response[1].total)
+				                    "y": parseInt(activos)
 				                }
 				            ]
 				        }
@@ -83,10 +85,10 @@
 				        colorByPoint: true,
 				        data: [{
 				            name: 'Inactivos',
-				            y: parseInt(response[0].total)
+				            y: parseInt(inactivos)
 				        }, {
 				            name: 'Activos',
-				            y: parseInt(response[1].total)
+				            y: parseInt(activos)
 				        }]
 				    }]
 				});

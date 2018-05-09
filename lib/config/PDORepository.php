@@ -7,13 +7,23 @@ abstract class PDORepository
     private static $conn;
 
     private static function connection(){
-         $conn = new PDO("mysql:dbname=".Config::getDatabase().";host=".Config::getHost(),
-            Config::getUser(), Config::getPassword(),
-            array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES  \'UTF8\''));
-        if(!$conn){
-            throw new Exception('could not connect to database');
+
+        try {
+
+            $conn = new PDO("mysql:dbname=".Config::getDatabase().";host=".Config::getHost(),
+                Config::getUser(), Config::getPassword(),
+                array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES  \'UTF8\''));
+
+            if(!$conn){
+                throw new Exception('could not connect to database');
+            }
+            return $conn;
+
+        } catch (Exception $e) {
+            echo "Excepción capturada: ",  $e->getMessage(), PHP_EOL;
+            echo "Por favor contáctese con el administrador.";
+            exit();
         }
-        return $conn;
     }
 
     protected static function getConnection() {

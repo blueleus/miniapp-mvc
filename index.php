@@ -70,8 +70,9 @@ class Server
 
     public function timeExpiro()
     {
-        $now = time();
-        return isset($_SESSION['expire']) && $now > $_SESSION['expire'];
+        //$now = time();
+        //return isset($_SESSION['expire']) && $now > $_SESSION['expire'];
+        return false;
     }
 }
 

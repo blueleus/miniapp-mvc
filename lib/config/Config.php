@@ -7,7 +7,7 @@ class Config
 {
 	private static $host = 'localhost';
 	private static $user = 'root';
-	private static $password = '';
+	private static $password = 'root';
 	private static $database = 'nexura';
 
 	public static function getHost(){

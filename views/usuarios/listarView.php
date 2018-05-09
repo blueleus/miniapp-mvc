@@ -4,24 +4,24 @@
             <h4><?php echo isset($mensaje) ? $mensaje : ""; ?></h4>
             <div class="container_options row">
                 <div class="col-md-4">
-                    <a class="btn btn-primary btn-lg btn-block" href="<?php echo Helper::getUrl("usuarios", "crear", array()); ?>"><span class="glyphicon glyphicon-plus"></span>Crear usuario.</a>
+                    <a class="btn btn-primary btn-lg btn-block" href="<?php echo Helper::getUrl("usuarios", "crear", array()); ?>"><span class="glyphicon glyphicon-plus"></span> Crear usuario.</a>
                 </div>
-
+                <div class="col-md-1" style="margin-top: 5px; margin-bottom: 5px"></div>
                 <div class="col-md-4">
-                    <a class="btn btn-secondary btn-lg btn-block" href="<?php echo Helper::getUrl("usuarios", "reportes", array()); ?>"><span class="glyphicon glyphicon-picture"></span>Reportes</a>
+                    <a class="btn btn-info btn-lg btn-block" href="<?php echo Helper::getUrl("usuarios", "reportes", array()); ?>"><span class="glyphicon glyphicon-picture"></span> Reportes</a>
                 </div>
             </div>
             <br>
             <div class="container_table table-responsive-lg">
-                <table id="users_table" class="table table-hover">
+                <table id="users_table" class="table table-bordered table-hover">
                     <thead class="thead-dark">
                         <tr>
                             <th></th>
                             <th>Nombre</th>
-                            <th>Email</th>
-                            <th>C&eacute;dula</th>
-                            <th>Estado</th>
-                            <th>Imagen</th>
+                            <th class='hidden-xs'>Email</th>
+                            <th class='hidden-xs'>C&eacute;dula</th>
+                            <th class='hidden-xs hidden-sm'>Estado</th>
+                            <th class='hidden-xs hidden-sm'>Imagen</th>
                             <th></th>
                             <th></th>
                             <th></th>
@@ -43,7 +43,7 @@
                             <a class="page-link" id="bt-next" href="#">Next</a>
                         </li>
                     </ul>
-                </nav>                
+                </nav>
             </div>
         </div>
     </div>
@@ -104,7 +104,7 @@
         http.open('HEAD', url, false);
         http.send();
         return http.status!=404;
-    }    
+    }
 
     function cargarUsuarios(pagina) {
         $.ajax({
@@ -125,7 +125,7 @@
                 $("#pagina").text(pagina_actual);
                 $("#total_paginas").text(total_paginas);
 
-                var tablebody = ""; 
+                var tablebody = "";
                 $.each(data, function(index, val) {
 
                     var idx = (index  + 1) + (pagina_actual-1)*10;
@@ -133,22 +133,22 @@
                     tablebody += "<tr>";
                     tablebody += "<td>" + idx + "</td>";
                     tablebody += "<td>" + val.nombre + "</td>";
-                    tablebody += "<td>" + val.email + "</td>";
-                    tablebody += "<td>" + val.cedula + "</td>";
-                    tablebody += "<td>" + val.estado + "</td>";
+                    tablebody += "<td class='hidden-xs'>" + val.email + "</td>";
+                    tablebody += "<td class='hidden-xs'>" + val.cedula + "</td>";
+                    tablebody += "<td class='hidden-xs hidden-sm'>" + val.estado + "</td>";
 
                     urlImagen = "/nexura/web/upload/" + val.email +".jpg";
 
                     if (existeUrl(urlImagen)) {
-                        tablebody += "<td><img src='" + urlImagen + "' border='1' width='100' height='100'></td>";
+                        tablebody += "<td class='hidden-xs hidden-sm'><img src='" + urlImagen + "' border='1' width='100' height='100'></td>";
                     }
                     else {
-                        tablebody += "<td></td>";
+                        tablebody += "<td class='hidden-xs hidden-sm'></td>";
                     }
-                    
-                    tablebody += "<td><a class='btn btn-secondary' href='http://localhost/nexura/index.php?mod=usuarios&fun=editar&id=" + val.id + "'>Editar.</a></td>";
-                    tablebody += "<td><a class='btn btn-danger' href='http://localhost/nexura/index.php?mod=usuarios&fun=eliminar&id=" + val.id + "'>Eliminar.</a></td>";
-                    tablebody += "<td><a class='btn btn-info' href='http://localhost/nexura/index.php?mod=usuarios&fun=buscar&id=" + val.id + "'>Ver.</a></td>";
+
+                    tablebody += "<td><a class='btn btn-warning btn-xs' href='http://localhost/nexura/index.php?mod=usuarios&fun=editar&id=" + val.id + "'><span class='glyphicon glyphicon-edit' aria-hidden='true'></span> <span class='hidden-xs'>Editar.</span></a></td>";
+                    tablebody += "<td><a class='btn btn-danger btn-xs' href='http://localhost/nexura/index.php?mod=usuarios&fun=eliminar&id=" + val.id + "'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span> <span class='hidden-xs'>Eliminar.</span></a></td>";
+                    tablebody += "<td><a class='btn btn-info btn-xs' href='http://localhost/nexura/index.php?mod=usuarios&fun=buscar&id=" + val.id + "'><span class='glyphicon glyphicon-eye-open' aria-hidden='true'></span> <span class='hidden-xs'>Ver.</span></a></td>";
                     tablebody += "</tr>";
                 });
 

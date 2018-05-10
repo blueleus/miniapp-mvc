@@ -13,10 +13,11 @@ class ContratosController
     public function crear()
     {
         $metodo = $_SERVER['REQUEST_METHOD'];
+        $result = array();
 
         switch ($metodo) {
             case 'POST':
-                // Crear usuario
+                // Crear contrato
                 $datos = $this->validarDatos();
 
                 if ($datos["result"]) {
@@ -26,19 +27,19 @@ class ContratosController
 					$msmodel->setPresupuesto($datos["presupuesto"]);
 					$msmodel->setFechaEstimadaFinalizacion($datos["fecha_estimada_fin"]);
                     $msmodel->insert();
-                    //$msmodel->setTipoContrato($datos["tipo_contratos"]);
-                    //$msmodel->setSecretaria($datos["secretaria"]);
+                    $msmodel->setSecretaria($datos["secretaria"]);
+                    $msmodel->setTipoContratos($datos["tipo_contratos"]);
                     $mensaje = "Registro creado !.";
                     $datos = array();
+
+                    $result["status"] = true;
                 }
                 else {
+                    $result["status"] = false;
                     $mensaje = isset($datos["mensaje"]) ? $datos["mensaje"] : "";
                 }
 
-                $result = array(
-                    "datos" => $datos,
-                    "mensaje" => isset($mensaje)? $mensaje : ""
-                );
+                $result["mensaje"] = isset($mensaje)? $mensaje : "";
 
                 header('Content-type: application/json; charset=utf-8');
                 echo json_encode($result);
@@ -78,7 +79,7 @@ class ContratosController
 
                 if ($datos["result"]) {
                     $datos["numero_contrato"] = $msmodel->getNumeroContrato();
-                    $datos["objeto_contrato"] = $msmodel->getObjetoContrato()();
+                    $datos["objeto_contrato"] = $msmodel->getObjetoContrato();
                     $datos["presupuesto"] = $msmodel->getPresupuesto();
                     $datos["fecha_estimada_finalizacion"] = $msmodel->getFechaEstimadaFinalizacion();
                     $datos["fecha_publicacion"] = $msmodel->getFechaPublicacion();
@@ -115,7 +116,7 @@ class ContratosController
                 return Helper::getView("contratos", "editarView", array(
                     "id" => $id,
                     "datos" => $datos,
-                    "mensaje" => isset($mensaje)? $mensaje : ""                 
+                    "mensaje" => isset($mensaje)? $mensaje : ""
                 ));
                 break;
 
@@ -232,9 +233,9 @@ class ContratosController
      */
     public function validarDatos()
     {
-        /*file_put_contents("nexura.log", date('c') .' --> '
-            . print_r($_POST, true) . PHP_EOL, FILE_APPEND | LOCK_EX);*/
-        
+        //file_put_contents("nexura.log", date('c') .' --> '
+        //    . print_r($_POST, true) . PHP_EOL, FILE_APPEND | LOCK_EX);
+
         $datos = array(
             "result" => true,
             "mensaje" => ""
@@ -250,54 +251,52 @@ class ContratosController
         if ( !$numero_contrato)
         {
             $datos["result"] = false;
-            $datos["mensaje"] = array("numero_contrato" => "numero_contrato es requerido.");
-        }        
+            $datos["mensaje"]["numero_contrato"] = "numero_contrato es requerido.";
+        }
 
         if (!$objeto_contrato)
         {
             $datos["result"] = false;
-            $datos["mensaje"] = array("objeto_contrato" => "objeto_contrato es requerido.");
-        }        
-        
+            $datos["mensaje"]["objeto_contrato"] = "objeto_contrato es requerido.";
+        }
+
         if (!$presupuesto)
         {
             $datos["result"] = false;
-            $datos["mensaje"] = array("presupuesto" => "presupuesto es requerido.");
-        }        
-        
+            $datos["mensaje"]["presupuesto"] = "presupuesto es requerido.";
+        }
+
         if (!$fecha_estimada_fin)
         {
             $datos["result"] = false;
-            $datos["mensaje"] = array("fecha_estimada_fin" => "fecha_estimada_fin es requerido.");
-        }        
-
-        if (count($tipo_contratos) < 0)
-        {
-            $datos["result"] = false;
-            $datos["mensaje"] = array("tipo_contratos" => "tipo_contratos es requerido.");
+            $datos["mensaje"]["fecha_estimada_fin"] = "fecha_estimada_fin es requerido.";
         }
 
-        if (count($secretaria) < 0)
+        if (empty($tipo_contratos))
         {
             $datos["result"] = false;
-            $datos["mensaje"] = array("secretaria" => "secretaria es requerido.");
+            $datos["mensaje"]["tipo_contratos"] = "tipo_contratos es requerido.";
+        }
+
+        if (!$secretaria)
+        {
+            $datos["result"] = false;
+            $datos["mensaje"]["secretaria"] = "secretaria es requerido.";
         }
 
         if (! preg_match("/^[0-9]+[-]{1}[A-Za-z]+[-]{1}[0-9]+/", $numero_contrato)) {
             $datos["result"] = false;
-            $datos["mensaje"] = array(
-                "numero_contrato" => "El numero_contrato debe cumplir el siguiente formato: 06943-GA-2018<br><br>");
+            $datos["mensaje"]["numero_contrato"] = "El numero_contrato debe cumplir el siguiente formato: 06943-GA-2018";
         }
 
         if (! preg_match("/^[A-Za-z\s]+/", $objeto_contrato)) {
             $datos["result"] = false;
-            $datos["mensaje"] = array(
-                "objeto_contrato" => "El objeto_contrato deben ser caracteres alfabeticos<br><br>");
+            $datos["mensaje"]["objeto_contrato"] = "El objeto_contrato deben ser caracteres alfabeticos";
         }
 
         if (! preg_match("/^[0-9]+/", $presupuesto)) {
             $datos["result"] = false;
-            $datos["mensaje"] .= array("presupuesto" => "El presupuesto debe ser un valor entero, Ej: 10000 para 10 mil pesos.");
+            $datos["mensaje"]["presupuesto"] = "El presupuesto debe ser un valor entero, Ej: 10000 para 10 mil pesos.";
         }
 
         $datos["numero_contrato"] = $numero_contrato;
@@ -324,5 +323,9 @@ class ContratosController
 
         /*$u = TipoContratosModel::findAll();
         var_dump($u);*/
+
+        $u = ContratosModel::find(8);
+        //print_r($u->getSecretaria());
+        print_r($u->getTipoContratos());
     }
 }

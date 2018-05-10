@@ -57,10 +57,6 @@
 <script type="text/javascript">
     $( document ).ready(function() {
         cargarContratos(1);
-
-        $('#save').on('click', function () {
-            realizaCreacion();
-        });
     });
 
     function cargarContratos(pagina) {
@@ -98,33 +94,5 @@
                 alert(err);
             }
         });
-    }
-
-    function realizaCreacion(){
-            var data = new FormData();
-            jQuery.each($('input[type=file]')[0].files, function(i, file) {
-                data.append('file-'+i, file);
-            });
-
-            var other_data = $('form').serializeArray();
-            $.each(other_data,function(key,input){
-                data.append(input.name,input.value);
-            });
-
-            $.ajax({
-                data:  data,
-                url:   'http://localhost/nexura/index.php?mod=contratos&fun=crear',
-                type:  'post',
-                dataType: 'json',
-                contentType:false,
-                processData:false,
-                cache:false,
-                beforeSend: function () {
-                    console.log("Procesando, espere por favor...");
-                },
-                success:  function (response) {
-                    console.log(response);
-                }
-            });
     }
 </script>

@@ -128,7 +128,11 @@ class ContratosModel extends PDORepository
     {
 		if ( ! $this->id ) {
 			//echo "No se tiene referencia al ID del objeto a actulizar.";
-			throw new Exception("No se tiene referencia al ID del objeto a actulizar.");
+            $mj = "No se tiene referencia al ID del objeto a actulizar.";
+
+            file_put_contents("nexura.log", date('c') .' --> '
+            . print_r($mj, true) . PHP_EOL, FILE_APPEND | LOCK_EX);
+			throw new Exception($mj);
 		}
 
 		$sql = "UPDATE contratos SET secretaria_id=:secretaria_id WHERE id=:id";
@@ -287,10 +291,10 @@ class ContratosModel extends PDORepository
 
         if ($arTable) {
         	$data = self::armarTable($pagina, $rs);
-        } 
+        }
         else {
         	$data = $rs;
-        }    	
+        }
 
         $result = array(
             "pagina" => $pagina,
@@ -339,6 +343,6 @@ class ContratosModel extends PDORepository
             "num_total_registros" => $num_total_registros
         );
 
-        return $result;        
+        return $result;
     }
-}	
+}

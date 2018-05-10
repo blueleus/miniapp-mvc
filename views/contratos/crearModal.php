@@ -9,13 +9,13 @@
       <div class="modal-body">
 
 
-        <form action="<?php echo Helper::getUrl("contratos", "crear", array()); ?>" method="post" enctype="multipart/form-data">
+        <form id="formCrear" action="<?php echo Helper::getUrl("contratos", "crear", array()); ?>" method="post" enctype="multipart/form-data">
 
           <div class="form-group row">
             <label for="numero_contrato" class="col-sm-2 col-form-label">Numero de contrato:</label>
             <div class="col-sm-10">
                 <input class="form-control" type="text" name="numero_contrato" value="">
-                <span id="mj_numero_contrato"></span>
+                <span class="mj_numero_contrato"></span>
             </div>
           </div>
 
@@ -23,7 +23,7 @@
             <label for="objeto_contrato" class="col-sm-2 col-form-label">Objeto del contrato:</label>
             <div class="col-sm-10">
               <input class="form-control" type="text" name="objeto_contrato" value="">
-              <span id="mj_objeto_contrato"></span>
+              <span class="mj_objeto_contrato"></span>
             </div>
           </div>
 
@@ -31,7 +31,7 @@
             <label for="presupuesto" class="col-sm-2 col-form-label">Presupuesto:</label>
             <div class="col-sm-10">
               <input class="form-control" type="text" name="presupuesto" value="">
-              <span id="mj_presupuesto"></span>
+              <span class="mj_presupuesto"></span>
             </div>
           </div>
 
@@ -39,7 +39,7 @@
             <label for="fecha_estimada_finalizacion" class="col-sm-2 col-form-label">Fecha estimada de finalizacion:</label>
             <div class="col-sm-10">
               <input class="form-control" type="date" name="fecha_estimada_finalizacion" value="">
-              <span id="mj_fecha_estimada_fin"></span>
+              <span class="mj_fecha_estimada_fin"></span>
             </div>
           </div>
 
@@ -53,7 +53,7 @@
                   }
                   echo "</select>";
                   ?>
-                  <span id="mj_tipo_contratos"></span>
+                  <span class="mj_tipo_contratos"></span>
               </div>
           </div>
 
@@ -67,7 +67,7 @@
                   }
                   echo "</select>";
                   ?>
-                  <span id="mj_secretaria"></span>
+                  <span class="mj_secretaria"></span>
               </div>
           </div>
 
@@ -89,16 +89,22 @@
         });
     });
 
+    function ocultarModal() {
+        $('#myModal').modal('hide');
+        $("#formCrear")[0].reset();
+        location.reload();
+    }
+
     function mostrarMensajes(mensajes) {
         $.each(mensajes,function(key,input){
-            $("#mj_" + key).text(input);
+            $(".mj_" + key).text(input);
         });
     }
 
     function realizaCreacion() {
             var data = new FormData();
 
-            var other_data = $('form').serializeArray();
+            var other_data = $('#formCrear').serializeArray();
             $.each(other_data,function(key,input){
                 data.append(input.name,input.value);
             });
@@ -119,6 +125,8 @@
                     if (typeof(response.status) != "undefined"
                         && response.status === false) {
                         mostrarMensajes(response.mensaje);
+                    } else {
+                        ocultarModal();
                     }
                 }
             });

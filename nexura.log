@@ -1,0 +1,18 @@
+2018-05-10T08:36:46+02:00 --> Array
+(
+    [result] => 1
+    [mensaje] => 
+    [numero_contrato] => 777-EE-88
+    [objeto_contrato] => Objeto 4
+    [presupuesto] => 5000
+    [fecha_estimada_fin] => 2018-05-24
+    [tipo_contratos] => Array
+        (
+            [0] => 1
+            [1] => 2
+            [2] => 3
+        )
+
+    [secretaria] => 2
+)
+

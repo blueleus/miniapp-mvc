@@ -30,7 +30,6 @@ class ContratosController
                     $msmodel->setSecretaria($datos["secretaria"]);
                     $msmodel->setTipoContratos($datos["tipo_contratos"]);
                     $mensaje = "Registro creado !.";
-                    $datos = array();
 
                     $result["status"] = true;
                 }
@@ -56,68 +55,51 @@ class ContratosController
     public function editar()
     {
         $metodo = $_SERVER['REQUEST_METHOD'];
-        $datos = array(
-            "result" => true,
-            "mensaje" => ""
-        );
+        $result = array();
 
         if ( ! isset($_REQUEST["id"]) ) {
-            $datos["result"] = false;
-            $datos["mensaje"] .= "No se ha especificado el ID.";
+            $result["status"] = false;
+            $result["mensaje"] = "No se ha especificado el ID.";
         }
 
         $id = $_REQUEST["id"];
         $msmodel = ContratosModel::find($id);
         if (!$msmodel) {
-            $datos["result"] = false;
-            $datos["mensaje"] .= "Contrato con ID = ". $id . " no encontrado.";
+            $result["status"] = false;
+            $result["mensaje"] = "Contrato con ID = ". $id . " no encontrado.";
         }
 
         switch ($metodo) {
-            case 'GET':
-                // Despliega la vista editar contrato
-
-                if ($datos["result"]) {
-                    $datos["numero_contrato"] = $msmodel->getNumeroContrato();
-                    $datos["objeto_contrato"] = $msmodel->getObjetoContrato();
-                    $datos["presupuesto"] = $msmodel->getPresupuesto();
-                    $datos["fecha_estimada_finalizacion"] = $msmodel->getFechaEstimadaFinalizacion();
-                    $datos["fecha_publicacion"] = $msmodel->getFechaPublicacion();
-                    $datos["secretaria_id"] = $msmodel->getSecretaria();
-                }
-                else {
-                    $mensaje = isset($datos["mensaje"]) ? $datos["mensaje"] : "";
-                }
-
-                return Helper::getView("contratos", "editarView", array(
-                    "id" => $id,
-                    "datos" => $datos,
-                    "mensaje" => isset($mensaje)? $mensaje : ""
-                ));
-                break;
-
             case 'POST':
                 // Crear contrato
                 $datos = $this->validarDatos();
+
+                file_put_contents("nexura.log", date('c') .' --> '
+                    . print_r($datos, true) . PHP_EOL, FILE_APPEND | LOCK_EX);
+
                 if ($datos["result"]) {
 					$msmodel->setNumeroContrato($datos["numero_contrato"]);
 					$msmodel->setObjetoContrato($datos["objeto_contrato"]);
 					$msmodel->setPresupuesto($datos["presupuesto"]);
-					$msmodel->setFechaEstimadaFinalizacion($datos["fecha_estimada_finalizacion"]);
-					$msmodel->setFechaPublicacion($datos["fecha_publicacion"]);
-					$msmodel->setSecretaria($datos["secretaria_id"]);
+					$msmodel->setFechaEstimadaFinalizacion($datos["fecha_estimada_fin"]);
                     $msmodel->update();
+					$msmodel->setSecretaria($datos["secretaria"]);
+                    $msmodel->setTipoContratos($datos["tipo_contratos"]);
                     $mensaje = "Registro actualizado !.";
+
+                    $result["status"] = true;
                 }
                 else {
+                    $result["status"] = false;
                     $mensaje = isset($datos["mensaje"]) ? $datos["mensaje"] : "";
                 }
 
-                return Helper::getView("contratos", "editarView", array(
-                    "id" => $id,
-                    "datos" => $datos,
-                    "mensaje" => isset($mensaje)? $mensaje : ""
-                ));
+                $result["mensaje"] = isset($mensaje)? $mensaje : "";
+
+                header('Content-type: application/json; charset=utf-8');
+                echo json_encode($result);
+                exit();
+
                 break;
 
             default:
@@ -193,6 +175,40 @@ class ContratosController
         exit();
     }
 
+    public function eliminarSelected()
+    {
+        $result = array();
+        $result["status"] = true;
+        $result["mensaje"] = "";
+
+        if ( ! isset($_REQUEST["ids"]) ) {
+            $result["status"] = false;
+            $result["mensaje"] .= "No se han especificado IDs.";
+        }
+
+        $ids = json_decode($_REQUEST["ids"]);
+        $objs = array();
+        foreach ($ids as $id) {
+            $msmodel = ContratosModel::find($id);
+            if (!$msmodel) {
+                $result["status"] = false;
+                $result["mensaje"] .= "Contrato con ID = ". $id . " no encontrado.";
+                break;
+            }
+            $objs[] = $msmodel;
+        }
+
+        if ($result["status"]) {
+            foreach ($objs as  $obj) {
+                $obj->delete();
+            }
+        }
+
+        header('Content-type: application/json; charset=utf-8');
+        echo json_encode($result);
+        exit();
+    }
+
     /**
      * Accion listar
      * @return [View] [lista todos los contratos creados.]
@@ -220,6 +236,49 @@ class ContratosController
     public function informacion_paginado()
     {
         $datos = ContratosModel::getInformacionPaginado();
+
+        header('Content-type: application/json; charset=utf-8');
+        echo json_encode($datos);
+        exit();
+    }
+
+    public function consultarPorId()
+    {
+        $result = array();
+        $result["status"] = true;
+
+        if ( ! isset($_REQUEST["id"]) ) {
+            $result["status"] = false;
+            $result["mensaje"] = "No se ha especificado el ID.";
+        }
+
+        $id = $_REQUEST["id"];
+        $msmodel = ContratosModel::ajaxFind($id);
+        if (!$msmodel) {
+            $result["status"] = false;
+            $result["mensaje"] = "Contrato con ID = ". $id . " no encontrado.";
+        }
+
+        if ($result["status"]) {
+            $result["data"] = $msmodel;
+        }
+
+        header('Content-type: application/json; charset=utf-8');
+        echo json_encode($result);
+        exit();
+    }
+
+    public function reportes()
+    {
+        return Helper::getView("contratos", "reportesView", array());
+    }
+
+    public function conteoContratosPorSecretaria()
+    {
+        $datos = ContratosModel::countContratosPorSecreataria();
+
+        file_put_contents("nexura.log", date('c') .' --> '
+            . print_r($datos, true) . PHP_EOL, FILE_APPEND | LOCK_EX);
 
         header('Content-type: application/json; charset=utf-8');
         echo json_encode($datos);
@@ -324,8 +383,14 @@ class ContratosController
         /*$u = TipoContratosModel::findAll();
         var_dump($u);*/
 
-        $u = ContratosModel::find(8);
+        /*$u = ContratosModel::find(8);
         //print_r($u->getSecretaria());
-        print_r($u->getTipoContratos());
+        print_r($u->getTipoContratos());*/
+
+        /*$u =  ContratosModel::ajaxFind(20);
+        print_r($u);*/
+
+        $datos = ContratosModel::countContratosPorSecreataria();
+        print_r($datos);
     }
 }

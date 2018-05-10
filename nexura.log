@@ -16,3 +16,21 @@
     [secretaria] => 2
 )
 
+2018-05-10T08:38:16+02:00 --> Array
+(
+    [0] => Array
+        (
+            [id] => 1
+            [nombre] => CULTURA
+            [total] => 1
+        )
+
+    [1] => Array
+        (
+            [id] => 2
+            [nombre] => EDUCACION
+            [total] => 3
+        )
+
+)
+

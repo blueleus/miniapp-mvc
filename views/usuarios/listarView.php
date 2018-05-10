@@ -3,12 +3,16 @@
         <div class="col-12 col-md-12">
             <h4><?php echo isset($mensaje) ? $mensaje : ""; ?></h4>
             <div class="container_options row">
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <a class="btn btn-primary btn-lg btn-block" href="<?php echo Helper::getUrl("usuarios", "crear", array()); ?>"><span class="glyphicon glyphicon-plus"></span> Crear usuario.</a>
                 </div>
                 <div class="col-md-1" style="margin-top: 5px; margin-bottom: 5px"></div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <a class="btn btn-info btn-lg btn-block" href="<?php echo Helper::getUrl("usuarios", "reportes", array()); ?>"><span class="glyphicon glyphicon-picture"></span> Reportes</a>
+                </div>
+                <div class="col-md-1" style="margin-top: 5px; margin-bottom: 5px"></div>
+                <div class="col-md-2">
+                    <a class="btn btn-info btn-lg btn-block" href="<?php echo Helper::getUrl("contratos", "listar", array()); ?>"><span class="glyphicon glyphicon-chevron-right"></span> Ir a contratos</a>
                 </div>
             </div>
             <br>

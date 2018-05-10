@@ -299,7 +299,7 @@ class ContratosModel extends PDORepository
      * @param  [int] $pagina [numero de pagina]
      * @return [array]       [array de objetos]
      */
-    public static function findAllPaginated($pagina, $arTable)
+    public static function findAllPaginated($pagina, $arTable, $filter, $search)
     {
         $sql = "SELECT COUNT(*) as total_registros FROM contratos";
         $stmt = parent::executeQuery($sql, array());
@@ -318,7 +318,14 @@ class ContratosModel extends PDORepository
         //calculo el total de páginas
         $total_paginas = ceil($num_total_registros / self::TAMANO_PAGINA);
 
-        $sql = "SELECT id, numero_contrato, objeto_contrato, presupuesto, fecha_estimada_finalizacion, fecha_publicacion, secretaria_id FROM contratos ORDER BY fecha_publicacion DESC LIMIT ".$inicio."," . self::TAMANO_PAGINA;
+        $sql = "SELECT id, numero_contrato, objeto_contrato, presupuesto, fecha_estimada_finalizacion, fecha_publicacion, secretaria_id FROM contratos";
+
+        if ($filter && $search) {
+            $sql .= " WHERE ".$filter." LIKE %'".$search."'%";
+        }
+
+        $sql .= " ORDER BY fecha_publicacion DESC LIMIT ".$inicio."," . self::TAMANO_PAGINA;
+
         $stmt = parent::executeQuery($sql, array());
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

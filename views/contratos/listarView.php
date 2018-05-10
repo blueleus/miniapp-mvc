@@ -20,7 +20,24 @@
             <div class="loader"></div>
             <br>
             <a id="bt_eliminar_selected" class="btn btn-danger btn-xs" href="#" style="margin-bottom: 10px"><span class="glyphicon glyphicon-remove"></span> Eliminar todos</a>
-            <div class="container_table table-responsive-lg">
+
+            <div class="navbar-form navbar-right" id="formSearch">
+                <div class="form-group">
+                    <select class="form-control" id="filter">
+                        <option value="numero_contrato">N&uacute;mero de contrato</option>
+                        <option value="objeto_contrato">Objeto del contrato</option>
+                        <option value="presupuesto">Presupuesto</option>
+                        <option value="fecha_estimada_finalizacion">Fecha estimada finalizaci&oacute;n</option>
+                        <option value="fecha_publicacion">Fecha publicaci&oacute;n</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search" id="text_search">
+                </div>
+                <button class="btn btn-default" id="search">Search</button>
+            </div>
+
+            <div class="container_table">
                 <table id="contratos_table" class="table table-bordered table-hover">
                     <thead class="thead-dark">
                         <tr>
@@ -66,7 +83,7 @@
 </div>
 <script type="text/javascript">
     $( document ).ready(function() {
-        cargarContratos(1);
+        cargarContratos(1, null, null);
 
         var info = getInfoPaginado();
         var num_total_registros = parseInt(info.num_total_registros);
@@ -77,7 +94,7 @@
             if (pagina_actual + 1 <= total_paginas ) {
                 pagina_actual += 1;
                 console.log(pagina_actual);
-                cargarContratos(pagina_actual);
+                cargarContratos(pagina_actual, null, null);
             } else {
                 alert("No hay más paginas.");
                 console.log("No hay más paginas.");
@@ -88,7 +105,7 @@
             if (pagina_actual - 1 > 0 ) {
                 pagina_actual -= 1;
                 console.log(pagina_actual);
-                cargarContratos(pagina_actual);
+                cargarContratos(pagina_actual, null, null);
             } else {
                 alert("No hay menos paginas.");
                 console.log("No hay menos paginas.");
@@ -103,7 +120,7 @@
         for (var i = 1; i <= total_paginas; i++) {
             $("#link-" + i).on( "click", function() {
                 var value = parseInt($(this).text());
-                cargarContratos(value);
+                cargarContratos(value, null, null);
                 pagina_actual = value;
             });
         }
@@ -135,6 +152,17 @@
                 alert("No se ha selecionado nada.");
             }
         });
+
+        $("#search").on("click", function () {
+
+            console.log($("#filter").val());
+            console.log($("#text_search").val());
+
+            var filter = $("#filter").val();
+            var search =  $("#text_search").val();
+
+            cargarContratos(pagina_actual, filter, search)
+        });
     });
 
     function getInfoPaginado() {
@@ -163,11 +191,11 @@
         }
     }
 
-    function cargarContratos(pagina) {
+    function cargarContratos(pagina, filter, search) {
         var loader = $('.loader');
 
         $.ajax({
-            data:  {"pagina" : pagina},
+            data:  {"pagina" : pagina, "filter" : filter, "search" : search},
             url:   'http://localhost/nexura/index.php?mod=contratos&fun=listar_paginado',
             type:  'GET',
             dataType: 'json',

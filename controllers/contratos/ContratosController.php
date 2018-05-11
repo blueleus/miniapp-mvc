@@ -110,7 +110,6 @@ class ContratosController
 
     /**
      * Accion ver.
-     * @return [View] [muestra la informacion de un contrato.]
      */
     public function buscar()
     {
@@ -143,8 +142,7 @@ class ContratosController
     }
 
     /**
-     * Accion eliminar
-     * @return [view] [elimina un usuario del sistema.]
+     * Accion eliminar.
      */
     public function eliminar()
     {
@@ -211,7 +209,6 @@ class ContratosController
 
     /**
      * Accion listar
-     * @return [View] [lista todos los contratos creados.]
      */
     public function listar()
     {

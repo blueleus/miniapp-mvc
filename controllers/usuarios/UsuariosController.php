@@ -1,6 +1,5 @@
 <?php
 
-
 require_once dirname(__FILE__)."/../../models/UsuariosModel.php";
 require_once dirname(__FILE__)."/../../models/RolesModel.php";
 
@@ -11,7 +10,6 @@ class UsuariosController
 {
     /**
      * Accion crear.
-     * @return [View] [form usuarios]
      */
     public function crear()
     {
@@ -62,7 +60,6 @@ class UsuariosController
 
     /**
      * Accion editar.
-     * @return [View] [form usuarios]
      */
     public function editar()
     {
@@ -150,7 +147,6 @@ class UsuariosController
 
     /**
      * Accion ver.
-     * @return [View] [muestra la informacion de un usuario.]
      */
     public function buscar()
     {
@@ -186,7 +182,6 @@ class UsuariosController
 
     /**
      * Accion eliminar
-     * @return [view] [elimina un usuario del sistema.]
      */
     public function eliminar()
     {
@@ -219,7 +214,6 @@ class UsuariosController
 
     /**
      * Accion listar
-     * @return [View] [lista todos los usuarios creados.]
      */
     public function listar()
     {

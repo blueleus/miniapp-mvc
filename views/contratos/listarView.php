@@ -23,15 +23,6 @@
 
             <div class="navbar-form navbar-right" id="formSearch">
                 <div class="form-group">
-                    <select class="form-control" id="filter">
-                        <option value="numero_contrato">N&uacute;mero de contrato</option>
-                        <option value="objeto_contrato">Objeto del contrato</option>
-                        <option value="presupuesto">Presupuesto</option>
-                        <option value="fecha_estimada_finalizacion">Fecha estimada finalizaci&oacute;n</option>
-                        <option value="fecha_publicacion">Fecha publicaci&oacute;n</option>
-                    </select>
-                </div>
-                <div class="form-group">
                     <input type="text" class="form-control" placeholder="Search" id="text_search">
                 </div>
                 <button class="btn btn-default" id="search">Search</button>
@@ -83,7 +74,7 @@
 </div>
 <script type="text/javascript">
     $( document ).ready(function() {
-        cargarContratos(1, null, null);
+        cargarContratos(1, "");
 
         var info = getInfoPaginado();
         var num_total_registros = parseInt(info.num_total_registros);
@@ -94,10 +85,10 @@
             if (pagina_actual + 1 <= total_paginas ) {
                 pagina_actual += 1;
                 console.log(pagina_actual);
-                cargarContratos(pagina_actual, null, null);
+                cargarContratos(pagina_actual, "");
             } else {
-                alert("No hay más paginas.");
-                console.log("No hay más paginas.");
+                alert("No hay mas paginas.");
+                console.log("No hay mas paginas.");
             }
         });
 
@@ -105,7 +96,7 @@
             if (pagina_actual - 1 > 0 ) {
                 pagina_actual -= 1;
                 console.log(pagina_actual);
-                cargarContratos(pagina_actual, null, null);
+                cargarContratos(pagina_actual, "");
             } else {
                 alert("No hay menos paginas.");
                 console.log("No hay menos paginas.");
@@ -120,7 +111,7 @@
         for (var i = 1; i <= total_paginas; i++) {
             $("#link-" + i).on( "click", function() {
                 var value = parseInt($(this).text());
-                cargarContratos(value, null, null);
+                cargarContratos(value, "");
                 pagina_actual = value;
             });
         }
@@ -154,14 +145,9 @@
         });
 
         $("#search").on("click", function () {
-
-            console.log($("#filter").val());
             console.log($("#text_search").val());
-
-            var filter = $("#filter").val();
             var search =  $("#text_search").val();
-
-            cargarContratos(pagina_actual, filter, search)
+            cargarContratos(pagina_actual, search)
         });
     });
 
@@ -191,11 +177,11 @@
         }
     }
 
-    function cargarContratos(pagina, filter, search) {
+    function cargarContratos(pagina, search) {
         var loader = $('.loader');
 
         $.ajax({
-            data:  {"pagina" : pagina, "filter" : filter, "search" : search},
+            data:  {"pagina" : pagina, "search" : search},
             url:   'http://localhost/nexura/index.php?mod=contratos&fun=listar_paginado',
             type:  'GET',
             dataType: 'json',
@@ -212,6 +198,7 @@
 
                 $("#pagina").text(pagina_actual);
                 $("#total_paginas").text(total_paginas);
+                $("#contratos_table tbody").html("");
 
                 if (data) {
                     $("#contratos_table tbody").html(data);

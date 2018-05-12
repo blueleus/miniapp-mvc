@@ -224,18 +224,12 @@ class ContratosController
     {
         $pagina = isset($_REQUEST["pagina"])? $_REQUEST["pagina"] : 1;
 
-        file_put_contents("nexura.log", date('c') .' --> '
-            . print_r($_REQUEST, true) . PHP_EOL, FILE_APPEND | LOCK_EX);
-
-        if (isset($_REQUEST["filter"]) && isset($_REQUEST["search"])) {
-            $datos = ContratosModel::findAllPaginated($pagina, true, $_REQUEST["filter"], $_REQUEST["search"]);
+        if (isset($_REQUEST["search"])) {
+            $datos = ContratosModel::findAllPaginated($pagina, true, $_REQUEST["search"]);
         }
         else {
             $datos = ContratosModel::findAllPaginated($pagina, true);
         }
-
-        file_put_contents("nexura.log", date('c') .' --> '
-            . print_r($datos, true) . PHP_EOL, FILE_APPEND | LOCK_EX);
 
         header('Content-type: application/json; charset=utf-8');
         echo json_encode($datos);

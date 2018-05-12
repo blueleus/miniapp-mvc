@@ -299,15 +299,14 @@ class ContratosModel extends PDORepository
      * @param  [int] $pagina [numero de pagina]
      * @return [array]       [array de objetos]
      */
-    public static function findAllPaginated($pagina, $arTable, $filter, $search)
+    public static function findAllPaginated($pagina, $arTable, $search)
     {
         $sql = "SELECT COUNT(*) as total_registros FROM contratos";
         $stmt = parent::executeQuery($sql, array());
         $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $num_total_registros = $r[0]["total_registros"];
-
-        //examino la página a mostrar y el inicio del registro a mostrar
+        
         if (!$pagina) {
            $inicio = 0;
            $pagina = 1;
@@ -315,13 +314,17 @@ class ContratosModel extends PDORepository
         else {
            $inicio = ($pagina - 1) * self::TAMANO_PAGINA;
         }
-        //calculo el total de páginas
+        //calculo el total de paginas
         $total_paginas = ceil($num_total_registros / self::TAMANO_PAGINA);
 
         $sql = "SELECT id, numero_contrato, objeto_contrato, presupuesto, fecha_estimada_finalizacion, fecha_publicacion, secretaria_id FROM contratos";
 
-        if ($filter && $search) {
-            $sql .= " WHERE ".$filter." LIKE %'".$search."'%";
+        if ($search) {
+            $sql .= " WHERE numero_contrato LIKE '%".$search."%'";
+            $sql .= " OR objeto_contrato LIKE '%".$search."%'";
+            $sql .= " OR presupuesto LIKE '%".$search."%'";
+            $sql .= " OR fecha_estimada_finalizacion LIKE '%".$search."%'";
+            $sql .= " OR fecha_publicacion LIKE '%".$search."%'";
         }
 
         $sql .= " ORDER BY fecha_publicacion DESC LIMIT ".$inicio."," . self::TAMANO_PAGINA;
@@ -380,7 +383,7 @@ class ContratosModel extends PDORepository
 
         $num_total_registros = $r[0]["total_registros"];
 
-        //calculo el total de páginas
+        //calculo el total de pÃ¡ginas
         $total_paginas = ceil($num_total_registros / self::TAMANO_PAGINA);
 
         $result = array(

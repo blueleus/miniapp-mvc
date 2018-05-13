@@ -3,6 +3,7 @@
 require_once dirname(__FILE__) . "/../../models/contratos/ContratosModel.php";
 require_once dirname(__FILE__) . "/../../models/contratos/SecretariasModel.php";
 require_once dirname(__FILE__) . "/../../models/contratos/TipoContratosModel.php";
+require_once dirname(__FILE__) . "/../../models/contratos/ArchivosModel.php";
 
 /**
  * Controlador Contratos
@@ -82,8 +83,26 @@ class ContratosController {
                     $msmodel->setSecretaria($datos["secretaria"]);
                     $msmodel->setTipoContratos($datos["tipo_contratos"]);
                     $mensaje = "Registro actualizado !.";
-
                     $result["status"] = true;
+
+                    foreach ($datos["files"] as $value) {
+                        $archivo = new ArchivosModel();
+                        $archivo->setNombre($value[1]["name"]);
+                        $archivo->setDescripcion($value[0]);
+                        $archivo->setTamano($value[1]["size"]);
+                        $archivo->setMimeType($value[1]["type"]);
+                        $archivo->setContratoId($id);
+
+                        $uri = "files/" . $value[1]["name"];
+                        $archivador = Helper::getPathUpload() . $uri;
+                        if (!move_uploaded_file($value[1]["tmp_name"], $archivador)) {
+                            $datos["result"] = false;
+                            $datos["mensaje"] = "Ocurrio un error al subir la imagen. No pudo guardarse.";
+                        } else {
+                            $archivo->setUrl($uri);
+                            $archivo->insert();
+                        }
+                    }
                 } else {
                     $result["status"] = false;
                     $mensaje = isset($datos["mensaje"]) ? $datos["mensaje"] : "";
@@ -271,6 +290,31 @@ class ContratosController {
         exit();
     }
 
+    public function findArchivosContrato() {
+        $result = array();
+        $result["status"] = true;
+
+        if (!isset($_REQUEST["id"])) {
+            $result["status"] = false;
+            $result["mensaje"] = "No se ha especificado el ID.";
+        }
+
+        $id = $_REQUEST["id"];
+        $msmodel = ContratosModel::find($id);
+        if (!$msmodel) {
+            $result["status"] = false;
+            $result["mensaje"] = "Contrato con ID = " . $id . " no encontrado.";
+        }
+
+        if ($result["status"]) {
+            $result["data"] = ArchivosModel::findAllForContrato($id);
+        }
+
+        header('Content-type: application/json; charset=utf-8');
+        echo json_encode($result);
+        exit();
+    }
+
     /**
      * Valida los datos de entrada antes de crear o actualizar informacion
      * en la base de datos.
@@ -291,6 +335,22 @@ class ContratosController {
         $fecha_estimada_fin = isset($_POST["fecha_estimada_finalizacion"]) ? $_POST["fecha_estimada_finalizacion"] : "";
         $tipo_contratos = isset($_POST["tipo_contrato"]) ? $_POST["tipo_contrato"] : array();
         $secretaria = isset($_POST["secretaria"]) ? $_POST["secretaria"] : "";
+        for ($i = 0; $i < 3; $i++) {
+            $aux1 = "descripFile" . $i;
+            $$aux1 = isset($_POST[$aux1]) ? $_POST[$aux1] : "";
+            $aux2 = "file" . $i;
+            $$aux2 = isset($_FILES["file-" . $i]) ? $_FILES["file-" . $i] : array();
+
+            if ((!empty($$aux2) && $$aux1 == "")) {
+                $datos["result"] = false;
+                $datos["mensaje"][$aux1] = $aux1 . " es requerido.";
+            }
+
+            if (empty($$aux2) && $$aux1 != "") {
+                $datos["result"] = false;
+                $datos["mensaje"]["file-" . $i] = "file-" . $i . " es requerido.";
+            }
+        }
 
         if (!$numero_contrato) {
             $datos["result"] = false;
@@ -344,8 +404,15 @@ class ContratosController {
         $datos["tipo_contratos"] = $tipo_contratos;
         $datos["secretaria"] = $secretaria;
 
-        /* file_put_contents("nexura.log", date('c') .' --> '
-          . print_r($datos, true) . PHP_EOL, FILE_APPEND | LOCK_EX); */
+        $files = array();
+        for ($i = 0; $i < 3; $i++) {
+            $aux1 = "descripFile" . $i;
+            $aux2 = "file" . $i;
+            if ($datos["result"] && $$aux1) {
+                $files[] = array($$aux1, $$aux2);
+            }
+        }
+        $datos["files"] = $files;
 
         return $datos;
     }
@@ -368,8 +435,10 @@ class ContratosController {
         /* $u =  ContratosModel::ajaxFind(20);
           print_r($u); */
 
-        $datos = ContratosModel::countContratosPorSecreataria();
-        print_r($datos);
+        /* $datos = ContratosModel::countContratosPorSecreataria();
+          print_r($datos); */
+        
+        /*print (ArchivosModel::findAllForContrato(3));*/
     }
 
 }

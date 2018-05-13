@@ -31,9 +31,11 @@ CREATE TABLE archivos (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre_archivo VARCHAR(255) NOT NULL ,
     descripcion VARCHAR(255) NULL ,
-    tamano INT NOT NULL , `mime_type` VARCHAR(100) NOT NULL ,
-    fecha_publicacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-    contrato_id BIGINT NOT NULL , `url` VARCHAR(255) NOT NULL ,
+    tamano INT NOT NULL , 
+    mime_type VARCHAR(100) NOT NULL ,
+    fecha_publicacion DATETIME DEFAULT CURRENT_TIMESTAMP ,
+    contrato_id BIGINT NOT NULL , 
+    url VARCHAR(255) NOT NULL ,
     FOREIGN KEY (contrato_id) REFERENCES contratos(id)
 ) ENGINE = InnoDB;
 

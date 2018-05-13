@@ -40,5 +40,4 @@ class SecretariasModel extends PDORepository {
 
         return $result;
     }
-
 }

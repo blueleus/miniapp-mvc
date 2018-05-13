@@ -1,48 +1,44 @@
 <?php
 
 /**
-* 
-*/
-class TipoContratosModel extends PDORepository
-{
-	private $id;
-	private $nombre;
+ * 
+ */
+class TipoContratosModel extends PDORepository {
 
-	public function setId($id)
-	{
-		$this->id = $id;
-	}
+    private $id;
+    private $nombre;
 
-	public function getId()
-	{
-		return $this->id;
-	}
+    public function setId($id) {
+        $this->id = $id;
+    }
 
-	public function setNombre($nombre)
-	{
-		$this->nombre = $nombre;
-	}
+    public function getId() {
+        return $this->id;
+    }
 
-	public function getNombre()
-	{
-		return $this->nombre;
-	}
+    public function setNombre($nombre) {
+        $this->nombre = $nombre;
+    }
 
-	public static function findAll()
-	{
-		$sql = "SELECT * FROM tipo_contratos";
-		$stmt = parent::executeQuery($sql, array());
-		$r = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function getNombre() {
+        return $this->nombre;
+    }
 
-		$result = array();
+    public static function findAll() {
+        $sql = "SELECT * FROM tipo_contratos";
+        $stmt = parent::executeQuery($sql, array());
+        $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-		foreach ($r as $row) {
-			$newObj = new TipoContratosModel();
-			$newObj->setId($row["id"]);
-			$newObj->setNombre($row["nombre"]);
-			array_push($result, $newObj);
-		}
+        $result = array();
 
-		return $result;
-	}		
+        foreach ($r as $row) {
+            $newObj = new TipoContratosModel();
+            $newObj->setId($row["id"]);
+            $newObj->setNombre($row["nombre"]);
+            array_push($result, $newObj);
+        }
+
+        return $result;
+    }
+
 }

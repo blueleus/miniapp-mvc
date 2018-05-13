@@ -14,11 +14,11 @@
                     <?php
                     if (isset($dato)) {
                         echo "<tr>";
-                        echo "<td>".$dato->getNumeroContrato()."</td>";
-                        echo "<td>".$dato->getObjetoContrato()."</td>";
-                        echo "<td class='hidden-xs'>".$dato->getPresupuesto()."</td>";
-                        echo "<td class='hidden-xs hidden-sm'>".$dato->getFechaEstimadaFinalizacion()."</td>";
-                        echo "<td>".$dato->getFechaPublicacion()."</td>";
+                        echo "<td>" . $dato->getNumeroContrato() . "</td>";
+                        echo "<td>" . $dato->getObjetoContrato() . "</td>";
+                        echo "<td class='hidden-xs'>" . $dato->getPresupuesto() . "</td>";
+                        echo "<td class='hidden-xs hidden-sm'>" . $dato->getFechaEstimadaFinalizacion() . "</td>";
+                        echo "<td>" . $dato->getFechaPublicacion() . "</td>";
                         echo "</tr>";
                     }
                     ?>

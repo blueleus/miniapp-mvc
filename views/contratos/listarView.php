@@ -73,7 +73,7 @@
     </div>
 </div>
 <script type="text/javascript">
-    $( document ).ready(function() {
+    $(document).ready(function () {
         cargarContratos(1, "");
 
         var info = getInfoPaginado();
@@ -81,8 +81,8 @@
         var total_paginas = parseInt(info.total_paginas);
         var pagina_actual = 1;
 
-        $("#bt-next").on( "click", function() {
-            if (pagina_actual + 1 <= total_paginas ) {
+        $("#bt-next").on("click", function () {
+            if (pagina_actual + 1 <= total_paginas) {
                 pagina_actual += 1;
                 console.log(pagina_actual);
                 cargarContratos(pagina_actual, "");
@@ -92,8 +92,8 @@
             }
         });
 
-        $("#bt-previoues").on( "click", function() {
-            if (pagina_actual - 1 > 0 ) {
+        $("#bt-previoues").on("click", function () {
+            if (pagina_actual - 1 > 0) {
                 pagina_actual -= 1;
                 console.log(pagina_actual);
                 cargarContratos(pagina_actual, "");
@@ -109,7 +109,7 @@
         }
 
         for (var i = 1; i <= total_paginas; i++) {
-            $("#link-" + i).on( "click", function() {
+            $("#link-" + i).on("click", function () {
                 var value = parseInt($(this).text());
                 cargarContratos(value, "");
                 pagina_actual = value;
@@ -118,35 +118,34 @@
 
         $("#bt_eliminar_selected").on("click", function () {
             var selected = [];
-            $('.micheckbox:checked').each( function() {
-                    selected.push($(this).val());
+            $('.micheckbox:checked').each(function () {
+                selected.push($(this).val());
             });
 
             if (selected.length > 0) {
                 $.ajax({
-                    data:  {"ids" : JSON.stringify(selected)},
-                    url:   'http://localhost/nexura/index.php?mod=contratos&fun=eliminarSelected',
-                    type:  'GET',
+                    data: {"ids": JSON.stringify(selected)},
+                    url: 'http://localhost/nexura/index.php?mod=contratos&fun=eliminarSelected',
+                    type: 'GET',
                     dataType: 'json',
                     beforeSend: function () {
                         console.log("Procesando, espere por favor...");
                     },
-                    success:  function (response) {
-                        if(typeof(response.status) != "undefined"
-                            && response.status === true) {
+                    success: function (response) {
+                        if (typeof (response.status) != "undefined"
+                                && response.status === true) {
                             location.reload();
                         }
                     }
                 });
-            }
-            else {
+            } else {
                 alert("No se ha selecionado nada.");
             }
         });
 
         $("#search").on("click", function () {
             console.log($("#text_search").val());
-            var search =  $("#text_search").val();
+            var search = $("#text_search").val();
             cargarContratos(pagina_actual, search)
         });
     });
@@ -157,22 +156,21 @@
 
         try {
             $.ajax({
-                url:   'http://localhost/nexura/index.php?mod=contratos&fun=informacion_paginado',
-                type:  'GET',
+                url: 'http://localhost/nexura/index.php?mod=contratos&fun=informacion_paginado',
+                type: 'GET',
                 dataType: 'json',
                 async: false,
                 beforeSend: function () {
                     console.log("Procesando, espere por favor...");
                 },
-                success:  function (response) {
+                success: function (response) {
                     //console.log(response);
                     dataResult = response;
                 }
             });
 
             return dataResult;
-        }
-        catch(ex) {
+        } catch (ex) {
             alert("ERROR: Ocurrio un error " + ex);
         }
     }
@@ -181,15 +179,15 @@
         var loader = $('.loader');
 
         $.ajax({
-            data:  {"pagina" : pagina, "search" : search},
-            url:   'http://localhost/nexura/index.php?mod=contratos&fun=listar_paginado',
-            type:  'GET',
+            data: {"pagina": pagina, "search": search},
+            url: 'http://localhost/nexura/index.php?mod=contratos&fun=listar_paginado',
+            type: 'GET',
             dataType: 'json',
             beforeSend: function () {
                 console.log("Procesando, espere por favor...");
                 loader.show();
             },
-            success:  function (response) {
+            success: function (response) {
                 //console.log(response);
                 //var num_total_registros = response.num_total_registros;
                 var pagina_actual = parseInt(response.pagina);
@@ -202,8 +200,7 @@
 
                 if (data) {
                     $("#contratos_table tbody").html(data);
-                }
-                else {
+                } else {
                     alert("No hay datos");
                 }
                 loader.hide();

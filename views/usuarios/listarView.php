@@ -55,7 +55,7 @@
     </div>
 </div>
 <script type="text/javascript">
-    $( document ).ready(function() {
+    $(document).ready(function () {
 
         cargarUsuarios(1);
         //inicializarListeners();
@@ -65,8 +65,8 @@
         var total_paginas = parseInt(info.total_paginas);
         var pagina_actual = 1;
 
-        $("#bt-next").on( "click", function() {
-            if (pagina_actual + 1 <= total_paginas ) {
+        $("#bt-next").on("click", function () {
+            if (pagina_actual + 1 <= total_paginas) {
                 pagina_actual += 1;
                 console.log(pagina_actual);
                 cargarUsuarios(pagina_actual);
@@ -76,8 +76,8 @@
             }
         });
 
-        $("#bt-previoues").on( "click", function() {
-            if (pagina_actual - 1 > 0 ) {
+        $("#bt-previoues").on("click", function () {
+            if (pagina_actual - 1 > 0) {
                 pagina_actual -= 1;
                 console.log(pagina_actual);
                 cargarUsuarios(pagina_actual);
@@ -94,49 +94,48 @@
 
         try {
             $.ajax({
-                url:   'http://localhost/nexura/index.php?mod=usuarios&fun=informacion_paginado',
-                type:  'GET',
+                url: 'http://localhost/nexura/index.php?mod=usuarios&fun=informacion_paginado',
+                type: 'GET',
                 dataType: 'json',
                 async: false,
                 beforeSend: function () {
                     console.log("Procesando, espere por favor...");
                 },
-                success:  function (response) {
+                success: function (response) {
                     console.log(response);
                     dataResult = response;
                 }
             });
 
             return dataResult;
-        }
-        catch(ex) {
+        } catch (ex) {
             alert("ERROR: Ocurrio un error " + ex);
         }
     }
 
     /*
-    Averigua si existe o no un archivo en la url especifica.
-    */
+     Averigua si existe o no un archivo en la url especifica.
+     */
     function existeUrl(url) {
         var http = new XMLHttpRequest();
         http.open('HEAD', url, false);
         http.send();
-        return http.status!=404;
+        return http.status != 404;
     }
 
     function cargarUsuarios(pagina) {
         var loader = $('.loader');
 
         $.ajax({
-            data:  {"pagina" : pagina},
-            url:   'http://localhost/nexura/index.php?mod=usuarios&fun=listar_paginado',
-            type:  'GET',
+            data: {"pagina": pagina},
+            url: 'http://localhost/nexura/index.php?mod=usuarios&fun=listar_paginado',
+            type: 'GET',
             dataType: 'json',
             beforeSend: function () {
                 console.log("Procesando, espere por favor...");
                 loader.show();
             },
-            success:  function (response) {
+            success: function (response) {
                 console.log(response);
                 //var num_total_registros = response.num_total_registros;
                 var pagina_actual = parseInt(response.pagina);
@@ -147,9 +146,9 @@
                 $("#total_paginas").text(total_paginas);
 
                 var tablebody = "";
-                $.each(data, function(index, val) {
+                $.each(data, function (index, val) {
 
-                    var idx = (index  + 1) + (pagina_actual-1)*10;
+                    var idx = (index + 1) + (pagina_actual - 1) * 10;
 
                     tablebody += "<tr>";
                     tablebody += "<td>" + idx + "</td>";
@@ -158,12 +157,11 @@
                     tablebody += "<td class='hidden-xs'>" + val.cedula + "</td>";
                     tablebody += "<td class='hidden-xs hidden-sm'>" + val.estado + "</td>";
 
-                    urlImagen = "/nexura/web/upload/" + val.email +".jpg";
+                    urlImagen = "/nexura/web/upload/" + val.email + ".jpg";
 
                     if (existeUrl(urlImagen)) {
                         tablebody += "<td class='hidden-xs hidden-sm'><img src='" + urlImagen + "' border='1' width='100' height='100'></td>";
-                    }
-                    else {
+                    } else {
                         tablebody += "<td class='hidden-xs hidden-sm'></td>";
                     }
 
